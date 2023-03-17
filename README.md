@@ -1,4 +1,4 @@
-# LightApi
+# LiteApi
 ### *A fast and effective framework that doesn't affect your architecture*
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/pjpawel/light-api.svg?style=flat-square)](https://packagist.org/packages/pjpawel/light-api)
