@@ -106,4 +106,14 @@ class CommandsLoader
     {
         return $_SERVER['argv'][0];
     }
+
+    public function __serialize(): array
+    {
+        return $this->command;
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->command = $data;
+    }
 }
