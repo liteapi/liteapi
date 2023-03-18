@@ -1,9 +1,9 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Logger;
+namespace LiteApi\Component\Logger;
 
 use Monolog\Logger;
-use pjpawel\LightApi\Container\Definition\DefinedDefinition;
+use LiteApi\Container\Definition\DefinedDefinition;
 use ReflectionClass;
 
 class MonologLoggerDefinition extends DefinedDefinition

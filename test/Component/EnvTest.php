@@ -1,20 +1,20 @@
 <?php
 
-namespace pjpawel\LightApi\Test\Component;
+namespace LiteApi\Test\Component;
 
 use PHPUnit\Framework\TestCase;
-use pjpawel\LightApi\Component\Env;
-use pjpawel\LightApi\Test\resources;
+use LiteApi\Component\Env;
+use LiteApi\Test\resources;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
- * @covers \pjpawel\LightApi\Component\Env
+ * @covers \LiteApi\Component\Env
  */
 class EnvTest extends TestCase
 {
 
     /**
-     * @covers \pjpawel\LightApi\Component\Env::getConfigFromEnv
+     * @covers \LiteApi\Component\Env::getConfigFromEnv
      */
     public function testGetConfigFromEnv()
     {
@@ -61,7 +61,7 @@ class EnvTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Component\Env::loadConfigFile
+     * @covers \LiteApi\Component\Env::loadConfigFile
      */
     public function testLoadConfigFile()
     {

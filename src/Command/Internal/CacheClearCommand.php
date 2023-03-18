@@ -1,12 +1,12 @@
 <?php
 
-namespace pjpawel\LightApi\Command\Internal;
+namespace LiteApi\Command\Internal;
 
-use pjpawel\LightApi\Command\Input\InputInterface;
-use pjpawel\LightApi\Command\Output\OutputInterface;
-use pjpawel\LightApi\Component\FilesManager;
-use pjpawel\LightApi\Component\Serializer;
-use pjpawel\LightApi\Kernel;
+use LiteApi\Command\Input\InputInterface;
+use LiteApi\Command\Output\OutputInterface;
+use LiteApi\Component\FilesManager;
+use LiteApi\Component\Serializer;
+use LiteApi\Kernel;
 use ReflectionClass;
 
 class CacheClearCommand extends KernelAwareCommand

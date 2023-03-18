@@ -1,11 +1,11 @@
 <?php
 
-namespace pjpawel\LightApi\Test\resources\classes;
+namespace LiteApi\Test\resources\classes;
 
-use pjpawel\LightApi\Container\Awareness\ContainerAwareInterface;
-use pjpawel\LightApi\Container\Awareness\ContainerAwareTrait;
-use pjpawel\LightApi\Http\Response;
-use pjpawel\LightApi\Route\AsRoute;
+use LiteApi\Container\Awareness\ContainerAwareInterface;
+use LiteApi\Container\Awareness\ContainerAwareTrait;
+use LiteApi\Http\Response;
+use LiteApi\Route\AsRoute;
 
 class ControllerTwo implements ContainerAwareInterface
 {

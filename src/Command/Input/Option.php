@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Command\Input;
+namespace LiteApi\Command\Input;
 
 class Option
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Route;
+namespace LiteApi\Route;
 
 use Attribute;
 

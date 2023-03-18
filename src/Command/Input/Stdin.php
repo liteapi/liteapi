@@ -1,9 +1,9 @@
 <?php
 
-namespace pjpawel\LightApi\Command\Input;
+namespace LiteApi\Command\Input;
 
 use Exception;
-use pjpawel\LightApi\Exception\KernelException;
+use LiteApi\Exception\KernelException;
 
 class Stdin implements InputInterface
 {

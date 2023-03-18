@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Container\Awareness;
+namespace LiteApi\Container\Awareness;
 
 use Psr\Container\ContainerInterface;
 

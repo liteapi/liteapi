@@ -1,10 +1,10 @@
 <?php
 
-namespace pjpawel\LightApi\Test\resources\classes;
+namespace LiteApi\Test\resources\classes;
 
-use pjpawel\LightApi\Route\AsRoute;
-use pjpawel\LightApi\Http\Request;
-use pjpawel\LightApi\Http\Response;
+use LiteApi\Route\AsRoute;
+use LiteApi\Http\Request;
+use LiteApi\Http\Response;
 
 class ControllerOne
 {

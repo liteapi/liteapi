@@ -1,9 +1,9 @@
 <?php
 
-namespace pjpawel\LightApi\Command;
+namespace LiteApi\Command;
 
-use pjpawel\LightApi\Command\Input\InputInterface;
-use pjpawel\LightApi\Command\Output\OutputInterface;
+use LiteApi\Command\Input\InputInterface;
+use LiteApi\Command\Output\OutputInterface;
 
 abstract class Command
 {

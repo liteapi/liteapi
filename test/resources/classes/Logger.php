@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Test\resources\classes;
+namespace LiteApi\Test\resources\classes;
 
 class Logger
 {

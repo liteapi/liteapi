@@ -1,8 +1,8 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Runner;
+namespace LiteApi\Component\Runner;
 
-use pjpawel\LightApi\Kernel;
+use LiteApi\Kernel;
 
 class CliRunner implements RunnerInterface
 {

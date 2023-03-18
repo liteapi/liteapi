@@ -1,14 +1,14 @@
 <?php
 
-namespace pjpawel\LightApi\Test\Command\Input;
+namespace LiteApi\Test\Command\Input;
 
-use pjpawel\LightApi\Command\Input\Argument;
-use pjpawel\LightApi\Command\Input\Option;
-use pjpawel\LightApi\Command\Input\Stdin;
+use LiteApi\Command\Input\Argument;
+use LiteApi\Command\Input\Option;
+use LiteApi\Command\Input\Stdin;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \pjpawel\LightApi\Command\Input\Stdin
+ * @covers \LiteApi\Command\Input\Stdin
  */
 class StdinTest extends TestCase
 {
@@ -47,7 +47,7 @@ class StdinTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Command\Input\Stdin::load
+     * @covers \LiteApi\Command\Input\Stdin::load
      */
     public function testLoad(): void
     {
@@ -93,7 +93,7 @@ class StdinTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Command\Input\Stdin::getArgument
+     * @covers \LiteApi\Command\Input\Stdin::getArgument
      */
     public function testGetArgument(): void
     {
@@ -112,7 +112,7 @@ class StdinTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Command\Input\Stdin::getOption
+     * @covers \LiteApi\Command\Input\Stdin::getOption
      */
     public function testGetOption(): void
     {

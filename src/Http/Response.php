@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Http;
+namespace LiteApi\Http;
 
 use function function_exists;
 

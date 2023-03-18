@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Event;
+namespace LiteApi\Component\Event;
 
 class CallbackEvent implements EventInterface
 {

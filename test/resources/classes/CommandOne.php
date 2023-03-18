@@ -1,11 +1,11 @@
 <?php
 
-namespace pjpawel\LightApi\Test\resources\classes;
+namespace LiteApi\Test\resources\classes;
 
-use pjpawel\LightApi\Command\AsCommand;
-use pjpawel\LightApi\Command\Command;
-use pjpawel\LightApi\Command\Input\InputInterface;
-use pjpawel\LightApi\Command\Output\OutputInterface;
+use LiteApi\Command\AsCommand;
+use LiteApi\Command\Command;
+use LiteApi\Command\Input\InputInterface;
+use LiteApi\Command\Output\OutputInterface;
 
 #[AsCommand('command:one')]
 class CommandOne extends Command

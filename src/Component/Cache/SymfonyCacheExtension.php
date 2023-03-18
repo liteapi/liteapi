@@ -1,13 +1,13 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Cache;
+namespace LiteApi\Component\Cache;
 
-use pjpawel\LightApi\Command\CommandsLoader;
-use pjpawel\LightApi\Component\Extension\Extension;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Container\Definition\AliasDefinition;
-use pjpawel\LightApi\Container\Definition\ClassDefinition;
-use pjpawel\LightApi\Container\Definition\Definition;
+use LiteApi\Command\CommandsLoader;
+use LiteApi\Component\Extension\Extension;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Definition\AliasDefinition;
+use LiteApi\Container\Definition\ClassDefinition;
+use LiteApi\Container\Definition\Definition;
 use Symfony\Contracts\Cache\CacheInterface;
 
 class SymfonyCacheExtension extends Extension

@@ -1,6 +1,6 @@
 <?php
 
-use pjpawel\LightApi\Test\resources\classes\Logger;
+use LiteApi\Test\resources\classes\Logger;
 
 return [
     'services' => realpath(__DIR__ . '/../../classes/'),

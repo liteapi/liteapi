@@ -1,15 +1,15 @@
 <?php
 
-namespace pjpawel\LightApi\Test;
+namespace LiteApi\Test;
 
 use PHPUnit\Framework\TestCase;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Kernel;
-use pjpawel\LightApi\Test\resources\classes\Logger;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Kernel;
+use LiteApi\Test\resources\classes\Logger;
 use ReflectionClass;
 
 /**
- * @covers \pjpawel\LightApi\Kernel
+ * @covers \LiteApi\Kernel
  */
 class KernelTest extends TestCase
 {
@@ -22,7 +22,7 @@ class KernelTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Kernel::__construct
+     * @covers \LiteApi\Kernel::__construct
      */
     public function test__construct(): void
     {
@@ -31,7 +31,7 @@ class KernelTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Kernel::boot
+     * @covers \LiteApi\Kernel::boot
      */
     public function testBoot(): void
     {

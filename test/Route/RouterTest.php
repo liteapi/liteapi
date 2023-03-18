@@ -1,24 +1,24 @@
 <?php
 
-namespace pjpawel\LightApi\Test\Route;
+namespace LiteApi\Test\Route;
 
 use Exception;
-use pjpawel\LightApi\Route\Route;
-use pjpawel\LightApi\Route\Router;
+use LiteApi\Route\Route;
+use LiteApi\Route\Router;
 use PHPUnit\Framework\TestCase;
-use pjpawel\LightApi\Http\Exception\MethodNotAllowedHttpException;
-use pjpawel\LightApi\Http\Request;
-use pjpawel\LightApi\Http\ResponseStatus;
-use pjpawel\LightApi\Test\resources\classes\ControllerOne;
+use LiteApi\Http\Exception\MethodNotAllowedHttpException;
+use LiteApi\Http\Request;
+use LiteApi\Http\ResponseStatus;
+use LiteApi\Test\resources\classes\ControllerOne;
 
 /**
- * @covers \pjpawel\LightApi\Route\Router
+ * @covers \LiteApi\Route\Router
  */
 class RouterTest extends TestCase
 {
 
     /**
-     * @covers \pjpawel\LightApi\Route\Router::getErrorResponse
+     * @covers \LiteApi\Route\Router::getErrorResponse
      */
     public function testGetErrorResponse(): void
     {
@@ -34,8 +34,8 @@ class RouterTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Route\Router::getRoute
-     * @covers \pjpawel\LightApi\Route\Router::registerRoute
+     * @covers \LiteApi\Route\Router::getRoute
+     * @covers \LiteApi\Route\Router::registerRoute
      */
     public function testGetRoute(): void
     {

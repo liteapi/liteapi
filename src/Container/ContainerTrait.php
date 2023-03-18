@@ -1,11 +1,11 @@
 <?php
 
-namespace pjpawel\LightApi\Container;
+namespace LiteApi\Container;
 
-use pjpawel\LightApi\Container\Definition\ClassDefinition;
-use pjpawel\LightApi\Container\Definition\DefinedDefinition;
-use pjpawel\LightApi\Container\Definition\Definition;
-use pjpawel\LightApi\Container\Definition\InDirectDefinition;
+use LiteApi\Container\Definition\ClassDefinition;
+use LiteApi\Container\Definition\DefinedDefinition;
+use LiteApi\Container\Definition\Definition;
+use LiteApi\Container\Definition\InDirectDefinition;
 use ReflectionClass;
 
 trait ContainerTrait
@@ -21,7 +21,7 @@ trait ContainerTrait
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \ReflectionException
-     * @throws \pjpawel\LightApi\Container\ContainerNotFoundException
+     * @throws \LiteApi\Container\ContainerNotFoundException
      */
     public function get(string $id): object
     {

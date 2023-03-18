@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Container;
+namespace LiteApi\Container;
 
 use Exception;
 use Psr\Container\NotFoundExceptionInterface;

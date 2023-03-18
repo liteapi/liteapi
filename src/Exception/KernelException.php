@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Exception;
+namespace LiteApi\Exception;
 
 use Exception;
 

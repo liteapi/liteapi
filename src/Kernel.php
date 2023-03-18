@@ -1,16 +1,16 @@
 <?php
 
-namespace pjpawel\LightApi;
+namespace LiteApi;
 
 use Exception;
-use pjpawel\LightApi\Command\CommandsLoader;
-use pjpawel\LightApi\Component\ClassWalker;
-use pjpawel\LightApi\Component\Env;
-use pjpawel\LightApi\Component\Event\EventHandler;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Route\Router;
-use pjpawel\LightApi\Http\Request;
-use pjpawel\LightApi\Http\Response;
+use LiteApi\Command\CommandsLoader;
+use LiteApi\Component\ClassWalker;
+use LiteApi\Component\Env;
+use LiteApi\Component\Event\EventHandler;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Route\Router;
+use LiteApi\Http\Request;
+use LiteApi\Http\Response;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 

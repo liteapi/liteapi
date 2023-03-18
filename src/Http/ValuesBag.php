@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Http;
+namespace LiteApi\Http;
 
 class ValuesBag
 {

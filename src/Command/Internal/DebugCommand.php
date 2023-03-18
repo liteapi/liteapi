@@ -1,11 +1,11 @@
 <?php
 
-namespace pjpawel\LightApi\Command\Internal;
+namespace LiteApi\Command\Internal;
 
 use Exception;
-use pjpawel\LightApi\Command\Input\InputInterface;
-use pjpawel\LightApi\Command\Output\OutputInterface;
-use pjpawel\LightApi\Kernel;
+use LiteApi\Command\Input\InputInterface;
+use LiteApi\Command\Output\OutputInterface;
+use LiteApi\Kernel;
 use ReflectionClass;
 
 class DebugCommand extends KernelAwareCommand

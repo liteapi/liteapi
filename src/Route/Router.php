@@ -1,14 +1,14 @@
 <?php
 
-namespace pjpawel\LightApi\Route;
+namespace LiteApi\Route;
 
 use Exception;
-use pjpawel\LightApi\Http\Exception\HttpException;
-use pjpawel\LightApi\Http\Exception\MethodNotAllowedHttpException;
-use pjpawel\LightApi\Http\Exception\NotFoundHttpException;
-use pjpawel\LightApi\Http\Request;
-use pjpawel\LightApi\Http\Response;
-use pjpawel\LightApi\Http\ResponseStatus;
+use LiteApi\Http\Exception\HttpException;
+use LiteApi\Http\Exception\MethodNotAllowedHttpException;
+use LiteApi\Http\Exception\NotFoundHttpException;
+use LiteApi\Http\Request;
+use LiteApi\Http\Response;
+use LiteApi\Http\ResponseStatus;
 
 class Router
 {

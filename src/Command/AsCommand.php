@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Command;
+namespace LiteApi\Command;
 
 use Attribute;
 

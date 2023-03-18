@@ -1,20 +1,20 @@
 <?php
 
-namespace pjpawel\LightApi\Test\Command;
+namespace LiteApi\Test\Command;
 
-use pjpawel\LightApi\Command\CommandsLoader;
+use LiteApi\Command\CommandsLoader;
 use PHPUnit\Framework\TestCase;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Test\resources\classes\CommandOne;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Test\resources\classes\CommandOne;
 
 /**
- * @covers \pjpawel\LightApi\Command\CommandsLoaders
+ * @covers \LiteApi\Command\CommandsLoaders
  */
 class CommandsLoaderTest extends TestCase
 {
 
     /**
-     * @covers \pjpawel\LightApi\Command\CommandsLoader::runCommandFromName
+     * @covers \LiteApi\Command\CommandsLoader::runCommandFromName
      */
     public function testRunCommandFromName()
     {
@@ -26,7 +26,7 @@ class CommandsLoaderTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Command\CommandsLoader::getCommandNameFromServer
+     * @covers \LiteApi\Command\CommandsLoader::getCommandNameFromServer
      */
     public function testGetCommandNameFromServer()
     {
@@ -35,7 +35,7 @@ class CommandsLoaderTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Command\CommandsLoader::registerCommand
+     * @covers \LiteApi\Command\CommandsLoader::registerCommand
      */
     public function testRegisterCommand()
     {

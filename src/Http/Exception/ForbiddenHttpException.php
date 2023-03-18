@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Http\Exception;
+namespace LiteApi\Http\Exception;
 
 class ForbiddenHttpException extends HttpException
 {

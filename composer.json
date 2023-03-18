@@ -1,8 +1,8 @@
 {
-    "name": "pjpawel/light-api",
+    "name": "liteapi/liteapi",
     "type": "framework",
     "license": "Apache-2.0",
-    "description": "LightApi is very fast framework that doesn't affect your architecture",
+    "description": "LiteApi is very fast framework that doesn't affect your architecture",
     "authors": [
         {
             "name": "pjpawel",
@@ -11,12 +11,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "pjpawel\\LightApi\\": "src/"
+            "LiteApi\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "pjpawel\\LightApi\\Test\\": "test/"
+            "LiteApi\\Test\\": "test/"
         }
     },
     "suggest": {

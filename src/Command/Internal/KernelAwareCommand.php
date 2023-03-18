@@ -1,9 +1,9 @@
 <?php
 
-namespace pjpawel\LightApi\Command\Internal;
+namespace LiteApi\Command\Internal;
 
-use pjpawel\LightApi\Command\Command;
-use pjpawel\LightApi\Kernel;
+use LiteApi\Command\Command;
+use LiteApi\Kernel;
 
 abstract class KernelAwareCommand extends Command
 {

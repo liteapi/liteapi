@@ -1,13 +1,13 @@
 <?php
 
-namespace pjpawel\LightApi\Component;
+namespace LiteApi\Component;
 
-use pjpawel\LightApi\Command\AsCommand;
-use pjpawel\LightApi\Command\CommandsLoader;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Route\AsRoute;
-use pjpawel\LightApi\Route\Router;
-use pjpawel\LightApi\Exception\ProgrammerException;
+use LiteApi\Command\AsCommand;
+use LiteApi\Command\CommandsLoader;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Route\AsRoute;
+use LiteApi\Route\Router;
+use LiteApi\Exception\ProgrammerException;
 use ReflectionClass;
 
 class ClassWalker

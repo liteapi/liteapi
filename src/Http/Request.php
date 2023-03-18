@@ -1,8 +1,8 @@
 <?php
 
-namespace pjpawel\LightApi\Http;
+namespace LiteApi\Http;
 
-use pjpawel\LightApi\Http\Exception\ForbiddenHttpException;
+use LiteApi\Http\Exception\ForbiddenHttpException;
 use Psr\Log\LoggerInterface;
 
 /**

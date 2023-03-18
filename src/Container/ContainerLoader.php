@@ -1,12 +1,12 @@
 <?php
 
-namespace pjpawel\LightApi\Container;
+namespace LiteApi\Container;
 
-use pjpawel\LightApi\Container\Definition\AliasDefinition;
-use pjpawel\LightApi\Container\Definition\ClassDefinition;
-use pjpawel\LightApi\Container\Definition\Definition;
-use pjpawel\LightApi\Container\Definition\InterfaceDefinition;
-use pjpawel\LightApi\Exception\ProgrammerException;
+use LiteApi\Container\Definition\AliasDefinition;
+use LiteApi\Container\Definition\ClassDefinition;
+use LiteApi\Container\Definition\Definition;
+use LiteApi\Container\Definition\InterfaceDefinition;
+use LiteApi\Exception\ProgrammerException;
 use Psr\Container\ContainerInterface;
 
 class ContainerLoader implements ContainerInterface
@@ -64,7 +64,7 @@ class ContainerLoader implements ContainerInterface
     /**
      * @param string[] $ids
      * @return Definition[]
-     * @throws \pjpawel\LightApi\Container\ContainerNotFoundException
+     * @throws \LiteApi\Container\ContainerNotFoundException
      */
     public function getDefinitions(array $ids): array
     {

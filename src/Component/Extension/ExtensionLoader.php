@@ -1,10 +1,10 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Extension;
+namespace LiteApi\Component\Extension;
 
-use pjpawel\LightApi\Command\CommandsLoader;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Route\Router;
+use LiteApi\Command\CommandsLoader;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Route\Router;
 
 class ExtensionLoader
 {

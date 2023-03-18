@@ -1,17 +1,17 @@
 <?php
 
-namespace pjpawel\LightApi\Route;
+namespace LiteApi\Route;
 
 use Exception;
-use pjpawel\LightApi\Container\Awareness\ContainerAwareInterface;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Container\ContainerNotFoundException;
-use pjpawel\LightApi\Exception\KernelException;
-use pjpawel\LightApi\Exception\ProgrammerException;
-use pjpawel\LightApi\Http\Exception\HttpException;
-use pjpawel\LightApi\Http\Request;
-use pjpawel\LightApi\Http\Response;
-use pjpawel\LightApi\Http\ResponseStatus;
+use LiteApi\Container\Awareness\ContainerAwareInterface;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\ContainerNotFoundException;
+use LiteApi\Exception\KernelException;
+use LiteApi\Exception\ProgrammerException;
+use LiteApi\Http\Exception\HttpException;
+use LiteApi\Http\Request;
+use LiteApi\Http\Response;
+use LiteApi\Http\ResponseStatus;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;

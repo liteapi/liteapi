@@ -1,13 +1,13 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Cache;
+namespace LiteApi\Component\Cache;
 
-use pjpawel\LightApi\Command\Command;
-use pjpawel\LightApi\Command\Input\InputInterface;
-use pjpawel\LightApi\Command\Output\OutputInterface;
-use pjpawel\LightApi\Container\Awareness\ContainerAwareInterface;
-use pjpawel\LightApi\Container\Awareness\ContainerAwareTrait;
-use pjpawel\LightApi\Kernel;
+use LiteApi\Command\Command;
+use LiteApi\Command\Input\InputInterface;
+use LiteApi\Command\Output\OutputInterface;
+use LiteApi\Container\Awareness\ContainerAwareInterface;
+use LiteApi\Container\Awareness\ContainerAwareTrait;
+use LiteApi\Kernel;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 class SymfonyCacheClearCommand extends Command implements ContainerAwareInterface

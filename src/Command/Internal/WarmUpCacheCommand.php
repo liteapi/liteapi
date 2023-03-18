@@ -1,15 +1,15 @@
 <?php
 
-namespace pjpawel\LightApi\Command\Internal;
+namespace LiteApi\Command\Internal;
 
-use pjpawel\LightApi\Command\CommandsLoader;
-use pjpawel\LightApi\Command\Input\InputInterface;
-use pjpawel\LightApi\Command\Output\OutputInterface;
-use pjpawel\LightApi\Component\FilesManager;
-use pjpawel\LightApi\Component\Serializer;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Kernel;
-use pjpawel\LightApi\Route\Router;
+use LiteApi\Command\CommandsLoader;
+use LiteApi\Command\Input\InputInterface;
+use LiteApi\Command\Output\OutputInterface;
+use LiteApi\Component\FilesManager;
+use LiteApi\Component\Serializer;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Kernel;
+use LiteApi\Route\Router;
 use ReflectionClass;
 
 class WarmUpCacheCommand extends KernelAwareCommand

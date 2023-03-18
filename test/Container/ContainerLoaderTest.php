@@ -1,15 +1,15 @@
 <?php
 
-namespace pjpawel\LightApi\Test\Container;
+namespace LiteApi\Test\Container;
 
 use PHPUnit\Framework\TestCase;
-use pjpawel\LightApi\Component\Logger\SimpleLogger\SimpleLogger;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Container\Definition\AliasDefinition;
+use LiteApi\Component\Logger\SimpleLogger\SimpleLogger;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Definition\AliasDefinition;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \pjpawel\LightApi\Container\ContainerLoader
+ * @covers \LiteApi\Container\ContainerLoader
  */
 class ContainerLoaderTest extends TestCase
 {
@@ -28,7 +28,7 @@ class ContainerLoaderTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Container\ContainerLoader::createDefinitionsFromConfig
+     * @covers \LiteApi\Container\ContainerLoader::createDefinitionsFromConfig
      */
     public function test__construct(): void
     {
@@ -41,7 +41,7 @@ class ContainerLoaderTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Container\ContainerLoader::add
+     * @covers \LiteApi\Container\ContainerLoader::add
      */
     public function testAdd(): void
     {
@@ -57,7 +57,7 @@ class ContainerLoaderTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Container\ContainerLoader::addDefinitions
+     * @covers \LiteApi\Container\ContainerLoader::addDefinitions
      */
     public function testAddDefinitions(): void
     {
@@ -71,7 +71,7 @@ class ContainerLoaderTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Container\ContainerLoader::getDefinitions
+     * @covers \LiteApi\Container\ContainerLoader::getDefinitions
      */
     public function testGetDefinitions(): void
     {
@@ -81,7 +81,7 @@ class ContainerLoaderTest extends TestCase
             SimpleLogger::class,
             LoggerInterface::class
         ]);
-        $this->assertTrue(is_a($definitions[0], \pjpawel\LightApi\Container\Definition\ClassDefinition::class));
+        $this->assertTrue(is_a($definitions[0], \LiteApi\Container\Definition\ClassDefinition::class));
         $this->assertTrue(is_a($definitions[1], AliasDefinition::class));
     }
 }

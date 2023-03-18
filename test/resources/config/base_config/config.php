@@ -1,6 +1,6 @@
 <?php
 
-use pjpawel\LightApi\Test\resources\classes\Logger;
+use LiteApi\Test\resources\classes\Logger;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 $projectDir = realpath(__DIR__ . '/../../../../');

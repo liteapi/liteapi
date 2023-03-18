@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Container\Definition;
+namespace LiteApi\Container\Definition;
 
 class ClassDefinition extends Definition
 {

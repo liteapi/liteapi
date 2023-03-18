@@ -1,23 +1,23 @@
 <?php
 
-namespace pjpawel\LightApi\Test\Route;
+namespace LiteApi\Test\Route;
 
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Route\Route;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Route\Route;
 use PHPUnit\Framework\TestCase;
-use pjpawel\LightApi\Http\Request;
-use pjpawel\LightApi\Test\resources\classes\ControllerOne;
-use pjpawel\LightApi\Test\resources\classes\ControllerTwo;
-use pjpawel\LightApi\Test\resources\classes\Logger;
+use LiteApi\Http\Request;
+use LiteApi\Test\resources\classes\ControllerOne;
+use LiteApi\Test\resources\classes\ControllerTwo;
+use LiteApi\Test\resources\classes\Logger;
 
 /**
- * @covers \pjpawel\LightApi\Route\Route
+ * @covers \LiteApi\Route\Route
  */
 class RouteTest extends TestCase
 {
 
     /**
-     * @covers \pjpawel\LightApi\Route\Route
+     * @covers \LiteApi\Route\Route
      */
     public function test__construct(): void
     {
@@ -29,7 +29,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Route\Route
+     * @covers \LiteApi\Route\Route
      */
     public function test__constructWithStringParam(): void
     {
@@ -41,7 +41,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Route\Route
+     * @covers \LiteApi\Route\Route
      */
     public function test__constructWithIntParam(): void
     {
@@ -53,7 +53,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Route\Route
+     * @covers \LiteApi\Route\Route
      */
     public function test__constructWithTwoParams(): void
     {
@@ -65,7 +65,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Route\Route::execute
+     * @covers \LiteApi\Route\Route::execute
      */
     public function testExecute(): void
     {
@@ -78,7 +78,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Route\Route::execute
+     * @covers \LiteApi\Route\Route::execute
      */
     public function testExecuteWithTwoParams(): void
     {
@@ -91,7 +91,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Route\Route::execute
+     * @covers \LiteApi\Route\Route::execute
      */
     public function testExecuteWithQuery(): void
     {
@@ -104,7 +104,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \pjpawel\LightApi\Route\Route::execute
+     * @covers \LiteApi\Route\Route::execute
      */
     public function testExecuteWithContainerServices(): void
     {

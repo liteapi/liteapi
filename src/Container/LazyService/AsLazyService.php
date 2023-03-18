@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Container\LazyService;
+namespace LiteApi\Container\LazyService;
 
 /** @deprecated  */
 #[\Attribute(\Attribute::TARGET_METHOD)]

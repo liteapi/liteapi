@@ -1,8 +1,8 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Event;
+namespace LiteApi\Component\Event;
 
-use pjpawel\LightApi\Exception\ProgrammerException;
+use LiteApi\Exception\ProgrammerException;
 
 class EventHandler
 {

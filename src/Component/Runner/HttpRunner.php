@@ -1,9 +1,9 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Runner;
+namespace LiteApi\Component\Runner;
 
-use pjpawel\LightApi\Http\Request;
-use pjpawel\LightApi\Kernel;
+use LiteApi\Http\Request;
+use LiteApi\Kernel;
 
 class HttpRunner implements RunnerInterface
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace pjpawel\LightApi\Component\Logger;
+namespace LiteApi\Component\Logger;
 
-use pjpawel\LightApi\Component\Extension\Extension;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Exception\ProgrammerException;
+use LiteApi\Component\Extension\Extension;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Exception\ProgrammerException;
 
 class MonologExtension extends Extension
 {

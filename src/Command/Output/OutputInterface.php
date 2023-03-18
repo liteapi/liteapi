@@ -1,6 +1,6 @@
 <?php
 
-namespace pjpawel\LightApi\Command\Output;
+namespace LiteApi\Command\Output;
 
 interface OutputInterface
 {

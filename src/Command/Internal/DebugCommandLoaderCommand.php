@@ -1,10 +1,10 @@
 <?php
 
-namespace pjpawel\LightApi\Command\Internal;
+namespace LiteApi\Command\Internal;
 
-use pjpawel\LightApi\Command\CommandsLoader;
-use pjpawel\LightApi\Command\Input\InputInterface;
-use pjpawel\LightApi\Command\Output\OutputInterface;
+use LiteApi\Command\CommandsLoader;
+use LiteApi\Command\Input\InputInterface;
+use LiteApi\Command\Output\OutputInterface;
 use ReflectionClass;
 
 class DebugCommandLoaderCommand extends KernelAwareCommand

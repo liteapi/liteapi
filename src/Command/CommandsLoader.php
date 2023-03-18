@@ -1,21 +1,21 @@
 <?php
 
-namespace pjpawel\LightApi\Command;
+namespace LiteApi\Command;
 
 use Exception;
-use pjpawel\LightApi\Command\Input\Stdin;
-use pjpawel\LightApi\Command\Internal\CacheClearCommand;
-use pjpawel\LightApi\Command\Internal\DebugCommandLoaderCommand;
-use pjpawel\LightApi\Command\Internal\DebugContainerCommand;
-use pjpawel\LightApi\Command\Internal\DebugCommand;
-use pjpawel\LightApi\Command\Internal\DebugRouterCommand;
-use pjpawel\LightApi\Command\Internal\KernelAwareCommand;
-use pjpawel\LightApi\Command\Internal\WarmUpCacheCommand;
-use pjpawel\LightApi\Command\Output\Stdout;
-use pjpawel\LightApi\Container\Awareness\ContainerAwareInterface;
-use pjpawel\LightApi\Container\ContainerLoader;
-use pjpawel\LightApi\Container\Definition\ClassDefinition;
-use pjpawel\LightApi\Kernel;
+use LiteApi\Command\Input\Stdin;
+use LiteApi\Command\Internal\CacheClearCommand;
+use LiteApi\Command\Internal\DebugCommandLoaderCommand;
+use LiteApi\Command\Internal\DebugContainerCommand;
+use LiteApi\Command\Internal\DebugCommand;
+use LiteApi\Command\Internal\DebugRouterCommand;
+use LiteApi\Command\Internal\KernelAwareCommand;
+use LiteApi\Command\Internal\WarmUpCacheCommand;
+use LiteApi\Command\Output\Stdout;
+use LiteApi\Container\Awareness\ContainerAwareInterface;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Definition\ClassDefinition;
+use LiteApi\Kernel;
 use ReflectionClass;
 use ReflectionNamedType;
 
