@@ -8,6 +8,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Stringable;
 
+/** @deprecated */
 class SimpleLogger implements LoggerInterface
 {
 

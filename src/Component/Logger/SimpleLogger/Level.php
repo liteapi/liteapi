@@ -2,6 +2,7 @@
 
 namespace LiteApi\Component\Logger\SimpleLogger;
 
+/** @deprecated */
 enum Level: int
 {
 
