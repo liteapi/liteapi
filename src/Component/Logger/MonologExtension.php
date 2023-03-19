@@ -9,7 +9,6 @@ use LiteApi\Exception\ProgrammerException;
 class MonologExtension extends Extension
 {
 
-    private const CONTAINER_PREFIX = 'monolog.';
 
     public function registerServices(ContainerLoader $container): void
     {
@@ -30,7 +29,7 @@ class MonologExtension extends Extension
             if (isset($aliasProcessors)) {
                 $processors += $aliasProcessors;
             }
-            $definitions[self::CONTAINER_PREFIX . $loggerName] = new MonologLoggerDefinition($loggerName, $handlers, $processors);
+            $definitions[$loggerName] = new MonologLoggerDefinition($loggerName, $handlers, $processors);
         }
         $container->addDefinitions($definitions);
     }
@@ -43,8 +42,8 @@ class MonologExtension extends Extension
      */
     private function getDefinitionFrom(array $definitions, string $loggerName): MonologLoggerDefinition
     {
-        if (isset($definitions[self::CONTAINER_PREFIX . $loggerName])) {
-            return $definitions[self::CONTAINER_PREFIX . $loggerName];
+        if (isset($definitions[$loggerName])) {
+            return $definitions[$loggerName];
         }
         throw new ProgrammerException('Cannot find logger definition of ' . $loggerName);
     }
