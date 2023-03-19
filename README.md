@@ -2,7 +2,9 @@
 ### *A fast and effective framework that doesn't affect your architecture*
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/liteapi/liteapi.svg?style=flat-square)](https://packagist.org/packages/liteapi/liteapi)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/liteapi/liteapi/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/liteapi/liteapi/?branch=main)![PHPStanLevel](https://img.shields.io/badge/PHPStan-5%20level-brightgreen.svg?style=flat)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/liteapi/liteapi/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/liteapi/liteapi/?branch=main)
+[![Build Status](https://scrutinizer-ci.com/g/liteapi/liteapi/badges/build.png?b=main)](https://scrutinizer-ci.com/g/liteapi/liteapi/build-status/main)
+![PHPStanLevel](https://img.shields.io/badge/PHPStan-5%20level-brightgreen.svg?style=flat)
 
 ### What's left in TODO:
 - [x] Logging
