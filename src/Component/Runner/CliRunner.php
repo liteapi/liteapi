@@ -9,7 +9,6 @@ class CliRunner implements RunnerInterface
 
     private Kernel $kernel;
     public ?string $commandName;
-    public int $result;
 
     public function __construct(Kernel $kernel, ?string $commandName = null)
     {
@@ -22,6 +21,7 @@ class CliRunner implements RunnerInterface
      */
     public function run(): void
     {
-        $this->result = $this->kernel->handleCommand($this->commandName);
+        $result = $this->kernel->handleCommand($this->commandName);
+        exit($result);
     }
 }
