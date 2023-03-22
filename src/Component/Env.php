@@ -3,6 +3,7 @@
 namespace LiteApi\Component;
 
 use LiteApi\Exception\ProgrammerException;
+use ReflectionClass;
 
 class Env
 {
@@ -46,7 +47,7 @@ class Env
             throw new ProgrammerException('Cannot create class from config');
         }
         if (isset($classConfig['args'])) {
-            return (new \ReflectionClass($classConfig['class']))->newInstanceArgs($classConfig['args'] ?? []);
+            return (new ReflectionClass($classConfig['class']))->newInstanceArgs($classConfig['args']);
         } else {
             return new $classConfig['class']();
         }
