@@ -8,6 +8,7 @@ use LiteApi\Container\ContainerLoader;
 use LiteApi\Container\Definition\AliasDefinition;
 use LiteApi\Container\Definition\ClassDefinition;
 use LiteApi\Container\Definition\Definition;
+use LiteApi\Container\Definition\InDirectDefinition;
 use Symfony\Contracts\Cache\CacheInterface;
 
 class SymfonyCacheExtension extends Extension
@@ -28,7 +29,8 @@ class SymfonyCacheExtension extends Extension
         foreach ($this->config as $id => $adapterConfig) {
             $definitions[$id] =  new ClassDefinition($adapterConfig['class'], $adapterConfig['args'] ?? []);
             if ($setKernelCache) {
-                $definitions['kernel.cache'] = new AliasDefinition(CacheInterface::class, '@' . $id);
+                $definitions['kernel.cache'] = new InDirectDefinition($id);
+                $definitions[CacheInterface::class] = new InDirectDefinition($id);
                 $setKernelCache = false;
             }
         }
