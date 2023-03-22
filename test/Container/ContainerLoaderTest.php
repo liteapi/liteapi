@@ -2,10 +2,11 @@
 
 namespace LiteApi\Test\Container;
 
+use LiteApi\Container\Definition\ClassDefinition;
+use LiteApi\Container\Definition\InDirectDefinition;
 use PHPUnit\Framework\TestCase;
 use LiteApi\Component\Logger\SimpleLogger\SimpleLogger;
 use LiteApi\Container\ContainerLoader;
-use LiteApi\Container\Definition\AliasDefinition;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -81,7 +82,7 @@ class ContainerLoaderTest extends TestCase
             SimpleLogger::class,
             LoggerInterface::class
         ]);
-        $this->assertTrue(is_a($definitions[0], \LiteApi\Container\Definition\ClassDefinition::class));
-        $this->assertTrue(is_a($definitions[1], AliasDefinition::class));
+        $this->assertTrue(is_a($definitions[0],     ClassDefinition::class));
+        $this->assertTrue(is_a($definitions[1], IndirectDefinition::class));
     }
 }
