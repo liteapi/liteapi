@@ -40,12 +40,16 @@ class Env
      * @return object
      * @throws ProgrammerException|\ReflectionException
      */
-    public function createClassFromConfig(array $classConfig): object
+    public static function createClassFromConfig(array $classConfig): object
     {
         if (!isset($classConfig['class'])) {
             throw new ProgrammerException('Cannot create class from config');
         }
-        return (new \ReflectionClass($classConfig['class']))->newInstanceArgs($classConfig['args'] ?? []);
+        if (isset($classConfig['args'])) {
+            return (new \ReflectionClass($classConfig['class']))->newInstanceArgs($classConfig['args'] ?? []);
+        } else {
+            return new $classConfig['class']();
+        }
     }
 
     /**
