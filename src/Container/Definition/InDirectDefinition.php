@@ -4,15 +4,13 @@ namespace LiteApi\Container\Definition;
 
 class InDirectDefinition extends Definition
 {
-    public string $className;
+    public string $serviceName;
 
     /**
-     * @param string $name
-     * @param string $className
+     * @param string $serviceName
      */
-    public function __construct(string $name, string $className)
+    public function __construct(string $serviceName)
     {
-        $this->name = $name;
-        $this->className = $className;
+        $this->serviceName = $serviceName;
     }
 }
