@@ -6,13 +6,18 @@
 [![Build Status](https://scrutinizer-ci.com/g/liteapi/liteapi/badges/build.png?b=main)](https://scrutinizer-ci.com/g/liteapi/liteapi/build-status/main)
 ![PHPStanLevel](https://img.shields.io/badge/PHPStan-5%20level-brightgreen.svg?style=flat)
 
-### What's left in TODO:
-- [x] Logging
-- [ ] Add OpenAPI generator
-- [x] Command and CommandLoader
-- [x] Test ContainerLoader and add ContainerTrait to inject services
-- [ ] Extend Command
+### How to start
 
-### Needed extension in the future:
-- [ ] Session
-- [x] Cache
+In order to start project with LiteApi use [skeleton](https://github.com/liteapi/skeleton):
+```shell
+composer create-project liteapi/skeleton <project_name>
+```
+
+Optionally you can use this package by:
+```shell
+composer require liteapi/liteapi
+```
+
+### Documentation
+
+Soon here will be a link to documentation page... 
