@@ -2,7 +2,9 @@
 
 namespace LiteApi\Container\Definition;
 
-class ClassDefinition extends Definition
+use ReflectionClass;
+
+class ClassDefinition extends DefinedDefinition
 {
 
     public string $name;
@@ -19,5 +21,10 @@ class ClassDefinition extends Definition
     {
         $this->name = $name;
         $this->arguments = $arguments;
+    }
+
+    public function load(): object
+    {
+        return (new ReflectionClass($this->name))->newInstanceArgs($this->arguments);
     }
 }
