@@ -28,7 +28,8 @@ class Request
         array $files = [],
         array $server = [],
         array $attributes = [],
-        $content = null)
+        $content = null
+    )
     {
         $this->query = new ValuesBag($query);
         $this->request = new ValuesBag($request);
