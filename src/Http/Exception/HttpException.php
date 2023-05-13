@@ -5,14 +5,14 @@ namespace LiteApi\Http\Exception;
 use Exception;
 use Throwable;
 
-abstract class HttpException extends Exception
+class HttpException extends Exception
 {
 
-    protected const CODE = 0;
+    protected const CODE = null;
 
-    public function __construct(string $message = "", ?Throwable $previous = null)
+    public function __construct(?int $code = null, string $message = '', ?Throwable $previous = null)
     {
-        parent::__construct($message, static::CODE, $previous);
+        parent::__construct($message, $code ?? self::CODE, $previous);
     }
 
 }
