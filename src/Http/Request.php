@@ -2,7 +2,7 @@
 
 namespace LiteApi\Http;
 
-use LiteApi\Http\Exception\ForbiddenHttpException;
+use LiteApi\Http\Exception\HttpException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -52,7 +52,7 @@ class Request
     /**
      * @param array $trustedIPs
      * @return void
-     * @throws ForbiddenHttpException
+     * @throws HttpException
      */
     public function validateIp(array $trustedIPs = []): void
     {
@@ -60,7 +60,7 @@ class Request
             return;
         }
         if (!in_array($this->ip, $trustedIPs)) {
-            throw new ForbiddenHttpException();
+            throw new HttpException(ResponseStatus::FORBIDDEN);
         }
     }
 

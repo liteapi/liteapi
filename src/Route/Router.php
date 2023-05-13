@@ -4,8 +4,6 @@ namespace LiteApi\Route;
 
 use Exception;
 use LiteApi\Http\Exception\HttpException;
-use LiteApi\Http\Exception\MethodNotAllowedHttpException;
-use LiteApi\Http\Exception\NotFoundHttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
 use LiteApi\Http\ResponseStatus;
