@@ -3,16 +3,25 @@
 namespace LiteApi\Http\Exception;
 
 use Exception;
+use LiteApi\Exception\ProgrammerException;
+use LiteApi\Http\ResponseStatus;
 use Throwable;
 
 class HttpException extends Exception
 {
 
-    protected const CODE = null;
-
-    public function __construct(?int $code = null, string $message = '', ?Throwable $previous = null)
+    /**
+     * @param ResponseStatus $status
+     * @param string $message
+     * @param Throwable|null $previous
+     * @throws ProgrammerException
+     */
+    public function __construct(public ResponseStatus $status, string $message = '', ?Throwable $previous = null)
     {
-        parent::__construct($message, $code ?? self::CODE, $previous);
+        if ($status->value < 400) {
+            throw new ProgrammerException('Http Exception must have status greater or equal to 400');
+        }
+        parent::__construct($message, $status->value, $previous);
     }
 
 }

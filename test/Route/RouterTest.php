@@ -3,10 +3,10 @@
 namespace LiteApi\Test\Route;
 
 use Exception;
+use LiteApi\Http\Exception\HttpException;
 use LiteApi\Route\Route;
 use LiteApi\Route\Router;
 use PHPUnit\Framework\TestCase;
-use LiteApi\Http\Exception\MethodNotAllowedHttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\ResponseStatus;
 use LiteApi\Test\resources\classes\ControllerOne;
@@ -27,7 +27,7 @@ class RouterTest extends TestCase
         $response = $router->getErrorResponse($exception);
         $this->assertEquals('Internal server error occurred', $response->content);
         $this->assertEquals(ResponseStatus::INTERNAL_SERVER_ERROR, $response->status);
-        $exception = new MethodNotAllowedHttpException('Something wrong happened');
+        $exception = new HttpException(ResponseStatus::METHOD_NOT_ALLOWED, 'Something wrong happened');
         $response = $router->getErrorResponse($exception);
         $this->assertEquals('Something wrong happened', $response->content);
         $this->assertEquals(ResponseStatus::METHOD_NOT_ALLOWED, $response->status);

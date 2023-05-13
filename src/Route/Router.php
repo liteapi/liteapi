@@ -38,8 +38,7 @@ class Router
     /**
      * @param Request $request
      * @return Route
-     * @throws NotFoundHttpException
-     * @throws MethodNotAllowedHttpException
+     * @throws HttpException
      */
     public function getRoute(Request $request): Route
     {
@@ -55,7 +54,7 @@ class Router
             }
         }
         if (!isset($matchedRoute)) {
-            throw $methodNotAllowed ? new MethodNotAllowedHttpException() : new NotFoundHttpException();
+            throw new HttpException($methodNotAllowed ? ResponseStatus::METHOD_NOT_ALLOWED : ResponseStatus::NOT_FOUND);
         }
         return $matchedRoute;
     }
@@ -63,7 +62,7 @@ class Router
     public function getErrorResponse(Exception|HttpException $exception): Response
     {
         if ($exception instanceof HttpException) {
-            return new Response($exception->getMessage(), ResponseStatus::from($exception->getCode()));
+            return new Response($exception->getMessage(), $exception->status);
         } else {
             return new Response('Internal server error occurred', ResponseStatus::INTERNAL_SERVER_ERROR);
         }
