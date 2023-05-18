@@ -20,4 +20,4 @@ composer require liteapi/liteapi
 
 ### Documentation
 
-Soon here will be a link to documentation page... 
+Documentation can be seen in [https://liteapi.github.io/liteapi-doc/](https://liteapi.github.io/liteapi-doc/)
