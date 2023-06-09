@@ -23,12 +23,12 @@ class CommandsLoader
 {
 
     private const KERNEL_COMMANDS = [
-        'kernel:debug' => DebugCommand::class,
-        'kernel:cache:warmup' => WarmUpCacheCommand::class,
-        'kernel:cache:clear' => CacheClearCommand::class,
-        'kernel:debug:container' => DebugContainerCommand::class,
-        'kernel:debug:router' => DebugRouterCommand::class,
-        'kernel:debug:command' => DebugCommandLoaderCommand::class
+        'debug:all' => DebugCommand::class,
+        'cache:warmup' => WarmUpCacheCommand::class,
+        'cache:clear' => CacheClearCommand::class,
+        'debug:container' => DebugContainerCommand::class,
+        'debug:router' => DebugRouterCommand::class,
+        'debug:command' => DebugCommandLoaderCommand::class
     ];
 
     /**
