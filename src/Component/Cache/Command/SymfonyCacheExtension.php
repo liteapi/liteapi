@@ -1,11 +1,10 @@
 <?php
 
-namespace LiteApi\Component\Cache;
+namespace LiteApi\Component\Cache\Command;
 
 use LiteApi\Command\CommandsLoader;
 use LiteApi\Component\Extension\Extension;
 use LiteApi\Container\ContainerLoader;
-use LiteApi\Container\Definition\AliasDefinition;
 use LiteApi\Container\Definition\ClassDefinition;
 use LiteApi\Container\Definition\Definition;
 use LiteApi\Container\Definition\InDirectDefinition;
@@ -13,13 +12,6 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 class SymfonyCacheExtension extends Extension
 {
-
-    /*
-     * id => [
-     *     class => '',
-     *     args => []
-     * ]
-     */
 
     public function registerServices(ContainerLoader $container): void
     {

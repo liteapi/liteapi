@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Component;
+namespace LiteApi\Component\Cache;
 
 use Gnugat\NomoSpaco\File\FileRepository;
 use Gnugat\NomoSpaco\FqcnRepository;

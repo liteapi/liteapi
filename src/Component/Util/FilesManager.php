@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Component;
+namespace LiteApi\Component\Util;
 
 use FilesystemIterator;
 use RecursiveDirectoryIterator;

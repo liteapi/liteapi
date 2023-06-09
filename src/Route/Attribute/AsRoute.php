@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Route;
+namespace LiteApi\Route\Attribute;
 
 use Attribute;
 

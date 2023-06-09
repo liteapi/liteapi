@@ -12,7 +12,12 @@ class Response
     public HeadersBag $headers;
     public string $version;
 
-    public function __construct(string|array $content = '', ResponseStatus $status = ResponseStatus::OK, array $headers = [], $version = '1.0')
+    public function __construct(
+        string|array $content = '',
+        ResponseStatus $status = ResponseStatus::Ok,
+        array $headers = [],
+        $version = '1.0'
+    )
     {
         $this->status = $status;
         $this->headers = new HeadersBag($headers);

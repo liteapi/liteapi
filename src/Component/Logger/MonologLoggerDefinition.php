@@ -2,9 +2,9 @@
 
 namespace LiteApi\Component\Logger;
 
-use LiteApi\Component\Env;
-use Monolog\Logger;
+use LiteApi\Component\Config\Env;
 use LiteApi\Container\Definition\DefinedDefinition;
+use Monolog\Logger;
 
 class MonologLoggerDefinition extends DefinedDefinition
 {

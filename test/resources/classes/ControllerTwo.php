@@ -5,7 +5,7 @@ namespace LiteApi\Test\resources\classes;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
 use LiteApi\Http\Response;
-use LiteApi\Route\AsRoute;
+use LiteApi\Route\Attribute\AsRoute;
 
 class ControllerTwo implements ContainerAwareInterface
 {

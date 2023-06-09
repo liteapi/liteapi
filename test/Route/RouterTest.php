@@ -26,11 +26,11 @@ class RouterTest extends TestCase
         $exception = new Exception('Something wrong happened');
         $response = $router->getErrorResponse($exception);
         $this->assertEquals('Internal server error occurred', $response->content);
-        $this->assertEquals(ResponseStatus::INTERNAL_SERVER_ERROR, $response->status);
-        $exception = new HttpException(ResponseStatus::METHOD_NOT_ALLOWED, 'Something wrong happened');
+        $this->assertEquals(ResponseStatus::InternalServerError, $response->status);
+        $exception = new HttpException(ResponseStatus::MethodNotAllowed, 'Something wrong happened');
         $response = $router->getErrorResponse($exception);
         $this->assertEquals('Something wrong happened', $response->content);
-        $this->assertEquals(ResponseStatus::METHOD_NOT_ALLOWED, $response->status);
+        $this->assertEquals(ResponseStatus::MethodNotAllowed, $response->status);
     }
 
     /**

@@ -3,7 +3,7 @@
 use LiteApi\Test\resources\classes\Logger;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-$projectDir = realpath(__DIR__ . '/../../../../');
+$projectDir = realpath(__DIR__ . '/../');
 
 return [
     'projectDir' => $projectDir,
@@ -13,7 +13,7 @@ return [
     'container' => [
         Logger::class => []
     ],
-    'services' => realpath(__DIR__ . '/../../classes/'),
+    'services' => [realpath(__DIR__ . '/../../../classes/')],
     'cache' => [
         'class' => FilesystemAdapter::class,
         'args' => [

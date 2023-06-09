@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Component\Logger\SimpleLogger;
+namespace LiteApi\Test\resources\classes;
 
 use DateTime;
 use DateTimeZone;
@@ -8,7 +8,6 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Stringable;
 
-/** @deprecated */
 class SimpleLogger implements LoggerInterface
 {
 

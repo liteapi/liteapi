@@ -61,9 +61,10 @@ class EventHandler
      * This method does not throw exception if Event is not registered
      *
      * @param string $eventId
+     * @param array $arguments
      * @return mixed
      */
-    public function tryTriggering(string $eventId): mixed
+    public function tryTriggering(string $eventId, array $arguments = []): mixed
     {
         if (!isset($this->events[$eventId])) {
             return null;

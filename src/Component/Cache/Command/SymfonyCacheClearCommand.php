@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Component\Cache;
+namespace LiteApi\Component\Cache\Command;
 
 use LiteApi\Command\Command;
 use LiteApi\Command\Input\InputInterface;
@@ -8,6 +8,7 @@ use LiteApi\Command\Output\OutputInterface;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
 use LiteApi\Kernel;
+use ReflectionClass;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 class SymfonyCacheClearCommand extends Command implements ContainerAwareInterface
@@ -15,9 +16,9 @@ class SymfonyCacheClearCommand extends Command implements ContainerAwareInterfac
 
     use ContainerAwareTrait;
 
-    protected function kernelCache(): AbstractAdapter
+    protected function kernel(): Kernel
     {
-        return $this->container->get(Kernel::KERNEL_CACHE_NAME);
+        return $this->container->get(Kernel::class);
     }
 
 //    public function prepare(InputInterface $input): void
@@ -30,7 +31,10 @@ class SymfonyCacheClearCommand extends Command implements ContainerAwareInterfac
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->kernelCache()->clear();
+        $reflectionClass = new ReflectionClass(Kernel::class);
+        /** @var AbstractAdapter $adapter */
+        $adapter = $reflectionClass->getProperty('kernelCache')->getValue($this->kernel());
+        $adapter->clear();
         return self::SUCCESS;
     }
 }

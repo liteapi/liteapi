@@ -9,6 +9,11 @@ use LiteApi\Exception\ProgrammerException;
 class MonologExtension extends Extension
 {
 
+    public static function validateConfig(array $config): void
+    {
+
+    }
+
 
     public function registerServices(ContainerLoader $container): void
     {

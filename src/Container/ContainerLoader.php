@@ -2,10 +2,12 @@
 
 namespace LiteApi\Container;
 
+use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Definition\ClassDefinition;
 use LiteApi\Container\Definition\DefinedDefinition;
 use LiteApi\Container\Definition\Definition;
 use LiteApi\Container\Definition\InDirectDefinition;
+use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
 use Psr\Container\ContainerInterface;
 
@@ -43,21 +45,29 @@ class ContainerLoader implements ContainerInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \ReflectionException
      * @throws \LiteApi\Container\ContainerNotFoundException
+     * @throws KernelException
      */
     public function get(string $id): object
     {
         if (!isset($this->definitions[$id])) {
-            throw new ContainerNotFoundException("Service $id not found");
+            throw new ContainerNotFoundException(sprintf('Service %s not found', $id));
         }
-        if ($this->definitions[$id]->object === null) {
-            $definition = $this->definitions[$id];
+        $definition = $this->definitions[$id];
+        if ($definition->object === null) {
             if ($definition instanceof DefinedDefinition) {
-                $this->definitions[$id]->object = $definition->load();
+                $definition->object = $definition->load();
             } elseif ($definition instanceof InDirectDefinition) {
                 return $this->get($definition->serviceName);
+            } else {
+                throw new KernelException(sprintf(
+                    'Undefined definition class %s in container. Cannot load object from definition of id %s',
+                    $definition::class, $id));
+            }
+            if (is_subclass_of($definition->object, ContainerAwareInterface::class)) {
+                $definition->object->setContainer($this);
             }
         }
-        return $this->definitions[$id]->object;
+        return $definition->object;
     }
 
     /**
@@ -89,35 +99,6 @@ class ContainerLoader implements ContainerInterface
     {
         foreach ($definitions as $id => $definition) {
             $this->definitions[$id] = $definition;
-        }
-    }
-
-    /**
-     * @param string[] $ids
-     * @return Definition[]
-     * @throws \LiteApi\Container\ContainerNotFoundException
-     */
-    public function getDefinitions(array $ids): array
-    {
-        /** @var Definition[] $definitions */
-        $definitions = [];
-        foreach ($ids as $id) {
-            if (!isset($this->definitions[$id])) {
-                throw new ContainerNotFoundException();
-            }
-            $definitions[] = $this->definitions[$id];
-        }
-        return $definitions;
-    }
-
-    /**
-     * @param array<string,string> $services
-     * @return void
-     */
-    public function prepareContainerLocator(array $services): void
-    {
-        foreach ($services as $internalId => $serviceId) {
-            $this->definitions[$internalId] = new InDirectDefinition($serviceId);
         }
     }
 }

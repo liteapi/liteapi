@@ -2,7 +2,10 @@
 
 namespace LiteApi\Http;
 
+use BackedEnum;
+use LiteApi\Exception\ProgrammerException;
 use LiteApi\Http\Exception\HttpException;
+use LiteApi\Route\QueryType;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -20,6 +23,7 @@ class Request
     public ValuesBag $files;
     public ValuesBag $cookies;
     public ?string $content;
+    public array $parsedContent = [];
 
     public function __construct(
         array $query = [],
@@ -49,26 +53,63 @@ class Request
         return new static($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
     }
 
+    public function getRequestLogMessage(): string
+    {
+        return sprintf('Requested path: %s, with %s method from ip: %s', $this->path, $this->method, $this->ip);
+    }
+
     /**
-     * @param array $trustedIPs
+     * @param array $queryDefinitions
+     * @return void
+     * @throws HttpException
+     * @throws ProgrammerException
+     */
+    public function parseQueryByDefinition(array $queryDefinitions): void
+    {
+        $queryParams = $this->query->parameters;
+        foreach ($queryDefinitions as $key => $definition) {
+            if (!isset($queryParams[$key])) {
+                continue;
+            }
+            $value = $queryParams[$key];
+            if ($definition instanceof QueryType) {
+                $queryParams[$key] = $definition->convertValue($value);
+            } elseif (is_subclass_of($definition, BackedEnum::class)) {
+                $enumValue = $definition::tryFrom($value);
+                if ($enumValue === null) {
+                    $cases = [];
+                    foreach ($definition::cases() as $case) {
+                        $cases[] = $case->value;
+                    }
+                    throw new HttpException(ResponseStatus::BadRequest,
+                        sprintf('%s is not valid value, choose from %s', $value, implode(', ', $cases)));
+                }
+            } else {
+                throw new ProgrammerException(sprintf('Unsupported type of definition: %s of key %s', $definition, $key));
+            }
+        }
+
+    }
+
+    /**
+     * @param string[] $requiredParams
      * @return void
      * @throws HttpException
      */
-    public function validateIp(array $trustedIPs = []): void
+    public function parseJsonContent(array $requiredParams): void
     {
-        if (empty($trustedIPs)) {
-            return;
+        if (!is_string($this->content)) {
+            throw new HttpException(ResponseStatus::BadRequest, 'Content is not a valid string');
         }
-        if (!in_array($this->ip, $trustedIPs)) {
-            throw new HttpException(ResponseStatus::FORBIDDEN);
+        $this->parsedContent = json_decode($this->content, true);
+        if ($this->parsedContent === false) {
+            throw new HttpException(ResponseStatus::BadRequest, 'Content is not valid json');
+        }
+        foreach ($requiredParams as $requiredParam) {
+            if (!isset($this->parsedContent[$requiredParam])) {
+                throw new HttpException(ResponseStatus::BadRequest, 'Missing required param ' . $requiredParam);
+            }
         }
     }
 
-    public function logRequest(?LoggerInterface $logger): void
-    {
-        $logger?->info(
-            sprintf('Requested path: %s, with %s method from ip: %s',
-                $this->path, $this->method, $this->ip)
-        );
-    }
 }

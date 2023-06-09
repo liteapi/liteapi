@@ -50,6 +50,7 @@ class CommandsLoader
     /**
      * @param string $commandName
      * @param ContainerLoader $container
+     * @param null|Kernel $kernel
      * @return int
      */
     public function runCommandFromName(string $commandName, ContainerLoader $container, ?Kernel $kernel = null): int
@@ -87,7 +88,7 @@ class CommandsLoader
                 $command->setContainer($container);
             }
             /* If $command is KernelAwareCommand set Kernel */
-            if (!is_null($kernel) && is_subclass_of($command, KernelAwareCommand::class)) {
+            if ($kernel != null && is_subclass_of($command, KernelAwareCommand::class)) {
                 $command->setKernel($kernel);
             }
             return $command->execute($stdin, $stdout);
