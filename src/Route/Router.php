@@ -3,6 +3,8 @@
 namespace LiteApi\Route;
 
 use Exception;
+use LiteApi\Container\ContainerLoader;
+use LiteApi\Exception\ProgrammerException;
 use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
@@ -15,6 +17,17 @@ class Router
      * @var Route[]
      */
     public array $routes = [];
+
+    /**
+     * @var array<int,string> key - http status, value method name
+     */
+    public array $onError = [];
+
+    public function __construct(
+        public array $trustedIps = []
+    )
+    {
+    }
 
     /**
      * Register new route
@@ -52,9 +65,42 @@ class Router
             }
         }
         if (!isset($matchedRoute)) {
-            throw new HttpException($methodNotAllowed ? ResponseStatus::METHOD_NOT_ALLOWED : ResponseStatus::NOT_FOUND);
+            throw new HttpException($methodNotAllowed ? ResponseStatus::MethodNotAllowed : ResponseStatus::NotFound);
         }
         return $matchedRoute;
+    }
+
+    public function executeRoute(Route $route, ContainerLoader $container, Request $request): Response
+    {
+        try {
+            return $route->execute($container, $request);
+        } catch (HttpException $httpException) {
+            if (isset($this->onError[$httpException->status->value])) {
+                return $this->onError[$httpException->status->value]($httpException);
+            }
+            return new Response($httpException->getMessage(), $httpException->status);
+        } catch (Exception $e) {
+            $internalError = ResponseStatus::InternalServerError;
+            if (isset($this->onError[$internalError->value])) {
+                return $this->onError[$internalError->value]($e);
+            }
+            return new Response($internalError->getText(), $internalError);
+        }
+    }
+
+    /**
+     * @param string $ip
+     * @return void
+     * @throws HttpException
+     */
+    public function validateIp(string $ip): void
+    {
+        if (empty($this->trustedIps)) {
+            return;
+        }
+        if (!in_array($ip, $this->trustedIps)) {
+            throw new HttpException(ResponseStatus::Forbidden);
+        }
     }
 
     public function getErrorResponse(Exception|HttpException $exception): Response
@@ -62,7 +108,12 @@ class Router
         if ($exception instanceof HttpException) {
             return new Response($exception->getMessage(), $exception->status);
         } else {
-            return new Response('Internal server error occurred', ResponseStatus::INTERNAL_SERVER_ERROR);
+            return new Response('Internal server error occurred', ResponseStatus::InternalServerError);
         }
+    }
+
+    public function registerOnError(int $statusCode, string $methodName): void
+    {
+        $this->onError[$statusCode] = $methodName;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace LiteApi\Test;
 
+use LiteApi\Component\Config\ConfigLoader;
+use LiteApi\Component\Config\Env;
 use PHPUnit\Framework\TestCase;
 use LiteApi\Container\ContainerLoader;
 use LiteApi\Kernel;
@@ -16,9 +18,11 @@ class KernelTest extends TestCase
 
     private function createKernel(): Kernel
     {
+        $env = new Env();
         $configDir = __DIR__ . '/resources/config/base_config';
-        //$config = Env::getConfigFromEnv($configDir);
-        return new Kernel($configDir);
+        $configLoader = new ConfigLoader($configDir);
+        $config = $configLoader->getConfig();
+        return new Kernel($config);
     }
 
     /**

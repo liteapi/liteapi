@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Component\Cache;
+namespace LiteApi\Component\Cache\Command;
 
 use LiteApi\Command\Command;
 use LiteApi\Command\Input\InputInterface;
@@ -8,6 +8,7 @@ use LiteApi\Command\Output\OutputInterface;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
 use LiteApi\Kernel;
+use ReflectionClass;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 class SymfonyCacheWarmupCommand extends Command implements ContainerAwareInterface
@@ -15,9 +16,9 @@ class SymfonyCacheWarmupCommand extends Command implements ContainerAwareInterfa
 
     use ContainerAwareTrait;
 
-    protected function kernelCache(): AbstractAdapter
+    protected function kernel(): Kernel
     {
-        return $this->container->get(Kernel::KERNEL_CACHE_NAME);
+        return $this->container->get(Kernel::class);
     }
 
     /**
@@ -25,7 +26,10 @@ class SymfonyCacheWarmupCommand extends Command implements ContainerAwareInterfa
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->kernelCache()->reset();
+        $reflectionClass = new ReflectionClass(Kernel::class);
+        /** @var AbstractAdapter $adapter */
+        $adapter = $reflectionClass->getProperty('kernelCache')->getValue($this->kernel());
+        $adapter->reset();
         return self::SUCCESS;
     }
 }

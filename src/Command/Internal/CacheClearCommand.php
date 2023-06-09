@@ -4,20 +4,12 @@ namespace LiteApi\Command\Internal;
 
 use LiteApi\Command\Input\InputInterface;
 use LiteApi\Command\Output\OutputInterface;
-use LiteApi\Component\FilesManager;
-use LiteApi\Component\Serializer;
 use LiteApi\Kernel;
 use ReflectionClass;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 class CacheClearCommand extends KernelAwareCommand
 {
-
-    private FilesManager $filesManager;
-
-    public function __construct()
-    {
-        $this->filesManager = new FilesManager();
-    }
 
     /**
      * @inheritDoc
@@ -25,13 +17,9 @@ class CacheClearCommand extends KernelAwareCommand
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $reflectionClass = new ReflectionClass(Kernel::class);
-        /** @var Serializer $serializer */
-        $serializer = $reflectionClass->getProperty('serializer')->getValue($this->kernel);
-        $serializerClass = new ReflectionClass($serializer);
-        $serializerDir = $serializerClass->getProperty('serializedDir')->getValue($serializer);
-        if (is_dir($serializerDir)) {
-            $this->filesManager->removeDirRecursive($serializerDir);
-        }
+        /** @var AbstractAdapter $adapter */
+        $adapter = $reflectionClass->getProperty('kernelCache')->getValue($this->kernel);
+        $adapter->clear();
         return self::SUCCESS;
     }
 }

@@ -12,6 +12,8 @@ use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
 use LiteApi\Http\ResponseStatus;
+use LiteApi\Route\Attribute\HasJsonContent;
+use LiteApi\Route\Attribute\HasQuery;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -83,9 +85,6 @@ class Route
      * @param ContainerLoader $container
      * @param Request $request
      * @return Response
-     * @throws \ReflectionException
-     * @throws ContainerNotFoundException
-     * @throws Exception
      */
     public function execute(ContainerLoader $container, Request $request): Response
     {
@@ -100,6 +99,16 @@ class Route
 
             $reflectionMethod = $reflectionClass->getMethod($this->methodName);
             $args = $this->loadArguments($reflectionMethod->getParameters(), $container, $request); //, true
+
+            $hasQueryAttributes = $reflectionMethod->getAttributes(HasQuery::class);
+            if (!empty($hasQueryAttributes)) {
+                $request->parseQueryByDefinition($hasQueryAttributes[0]->getArguments()[0]);
+            }
+
+            $hasJsonContentAttributes = $reflectionMethod->getAttributes(HasJsonContent::class);
+            if (!empty($hasJsonContentAttributes)) {
+                $request->parseJsonContent($hasJsonContentAttributes[0]->getArguments()[0]);
+            }
 
             if (is_subclass_of($class, ContainerAwareInterface::class)) {
                 $class->setContainer($container);
@@ -118,7 +127,7 @@ class Route
         } catch (HttpException $httpExc) {
             return new Response($httpExc->getMessage(), ResponseStatus::from($httpExc->getCode()));
         } catch (Exception $exc) {
-            return new Response('Internal server error occurred', ResponseStatus::INTERNAL_SERVER_ERROR);
+            return new Response('Internal server error occurred', ResponseStatus::InternalServerError);
         }
     }
 

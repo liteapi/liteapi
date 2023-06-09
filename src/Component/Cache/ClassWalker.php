@@ -1,13 +1,14 @@
 <?php
 
-namespace LiteApi\Component;
+namespace LiteApi\Component\Cache;
 
 use LiteApi\Command\AsCommand;
 use LiteApi\Command\CommandsLoader;
 use LiteApi\Container\ContainerLoader;
-use LiteApi\Route\AsRoute;
-use LiteApi\Route\Router;
 use LiteApi\Exception\ProgrammerException;
+use LiteApi\Route\Attribute\AsRoute;
+use LiteApi\Route\Attribute\OnError;
+use LiteApi\Route\Router;
 use ReflectionClass;
 
 class ClassWalker
@@ -58,6 +59,15 @@ class ClassWalker
                         $method->getName(),
                         $arguments[0],
                         $arguments[1] ?? []);
+                }
+                $attributes = $method->getAttributes(OnError::class);
+                if (!empty($attributes)) {
+                    $attribute = $attributes[0];
+                    $arguments = $attribute->getArguments();
+                    $router->registerOnError(
+                        $arguments[0]->value,
+                        $className . '::' . $method->getName()
+                    );
                 }
             }
         }

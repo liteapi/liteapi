@@ -19,14 +19,11 @@ class DebugRouterCommand extends KernelAwareCommand
         $routerReflection = $reflectionKernel->getProperty('router');
         /** @var Router $router */
         $router = $routerReflection->getValue($this->kernel);
-
         $names = [];
         foreach ($router->routes as $route) {
             $names[] = $route->path;
         }
-
         $output->writeln($names);
-
         return self::SUCCESS;
     }
 }

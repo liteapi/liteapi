@@ -11,6 +11,8 @@ interface ExtensionInterface
 
     public function loadConfig(array $config): void;
 
+    public static function validateConfig(array $config): void;
+
     public function registerServices(ContainerLoader $container): void;
 
     public function registerRoutes(Router $router): void;

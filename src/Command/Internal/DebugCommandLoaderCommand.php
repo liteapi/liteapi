@@ -19,9 +19,7 @@ class DebugCommandLoaderCommand extends KernelAwareCommand
         $commandLoaderReflection = $reflectionKernel->getProperty('commandLoader');
         /** @var CommandsLoader $commandLoader */
         $commandLoader = $commandLoaderReflection->getValue($this->kernel);
-
         $output->writeln(array_keys($commandLoader->command));
-
         return self::SUCCESS;
     }
 }

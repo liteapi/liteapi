@@ -19,9 +19,7 @@ class DebugContainerCommand extends KernelAwareCommand
         $containerLoaderReflection = $reflectionKernel->getProperty('containerLoader');
         /** @var ContainerLoader $containerLoader */
         $containerLoader = $containerLoaderReflection->getValue($this->kernel);
-
         $output->writeln(array_keys($containerLoader->definitions));
-
         return self::SUCCESS;
     }
 }

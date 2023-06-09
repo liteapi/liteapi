@@ -4,61 +4,59 @@ namespace LiteApi;
 
 use Exception;
 use LiteApi\Command\CommandsLoader;
-use LiteApi\Component\ClassWalker;
-use LiteApi\Component\Env;
+use LiteApi\Component\Cache\ClassWalker;
+use LiteApi\Component\Config\Wrapper\ConfigWrapper;
 use LiteApi\Component\Event\EventHandler;
 use LiteApi\Container\ContainerLoader;
-use LiteApi\Route\Router;
+use LiteApi\Container\ParamsBag;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
+use LiteApi\Route\Router;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
 class Kernel
 {
 
-    public const VERSION = 003000;
-    public const VERSION_DOTTED = '0.3.0';
-    /* only for stable version */
-    //public const VERSION_END_OF_LIFE = '06/2023';
-    //public const VERSION_END_OF_MAINTENANCE = '03/2023';
+    public const VERSION = 005000;
+    public const VERSION_DOTTED = '0.5.0';
+    /* only for stable version
+    public const VERSION_END_OF_LIFE = '06/2024';
+    public const VERSION_END_OF_MAINTENANCE = '03/2024';
+    */
 
-    public const KERNEL_CACHE_NAME = 'kernel.cache';
-    public const KERNEL_LOGGER_NAME = 'kernel.logger';
     private const PROPERTIES_TO_CACHE = [
         'containerLoader' => 'kernel.container',
         'router' => 'kernel.router',
         'commandLoader' => 'kernel.command'
     ];
 
-    /**
-     * @var string project directory
-     */
+
     public string $projectDir;
     public string $env;
     public bool $debug;
-    private bool $makeCacheOnDestruct = true;
-    private Router $router;
-    private CommandsLoader $commandLoader;
-    private ContainerLoader $containerLoader;
-    private ?LoggerInterface $kernelLogger;
+    public Router $router;
+    public CommandsLoader $commandLoader;
+    public ContainerLoader $containerLoader;
     private EventHandler $eventHandler;
     private AbstractAdapter $kernelCache;
+    private ?LoggerInterface $kernelLogger = null;
+    private bool $makeCacheOnDestruct = true;
 
-    public function __construct(string $configDir)
+    public function __construct(ConfigWrapper $config)
     {
-        $env = new Env();
-        $config = $env->getConfigFromEnv($configDir);
-        $this->projectDir = $config['projectDir'];
-        $this->env = $config['env'];
-        $this->debug = $config['debug'];
-        $this->kernelCache = $env->createClassFromConfig($config['cache']);
+        $this->projectDir = $config->projectDir;
+        $this->env = $config->envParams->env;
+        $this->debug = $config->envParams->debug;
+        $this->kernelCache = $config->cache->createObject();
         $this->boot($config);
         $this->ensureContainerHasKernelServices();
+        $this->tryToSetKernelLogger();
+        $this->eventHandler = new EventHandler();
         $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_BOOT);
     }
 
-    protected function boot(array $config): void
+    protected function boot(ConfigWrapper $config): void
     {
         $loaded = false;
         if (!$this->debug) {
@@ -74,47 +72,53 @@ class Kernel
             $this->makeCacheOnDestruct = false;
         }
         if (!$loaded) {
-            $classWalker = new ClassWalker($config['services'] ?? $this->projectDir);
             $this->containerLoader = new ContainerLoader();
-            $this->router = new Router();
+            $this->router = new Router($config->trustedIps);
             $this->commandLoader = new CommandsLoader();
-            $classWalker->register($this->containerLoader, $this->router, $this->commandLoader);
-            $this->containerLoader->createDefinitionsFromConfig($config['container']);
+            foreach ($config->servicesDir as $serviceDir) {
+                $classWalker = new ClassWalker($serviceDir);
+                $classWalker->register($this->containerLoader, $this->router, $this->commandLoader);
+            }
+            $this->containerLoader->createDefinitionsFromConfig($config->container);
+            $this->containerLoader->add(['name' => ParamsBag::class, 'args' => [$config->envParams->params]]);
         }
     }
 
     private function ensureContainerHasKernelServices(): void
     {
-        if (!$this->containerLoader->has(EventHandler::class)) {
-            $this->containerLoader->add(['name' => EventHandler::class]);
-            $this->eventHandler = $this->containerLoader->get(EventHandler::class);
+        if (!$this->containerLoader->has('kernel')) {
+            $this->containerLoader->add(['name' => 'kernel', 'object' => $this]);
         }
-        $this->containerLoader->add(['name' => self::KERNEL_CACHE_NAME, 'object' => $this->kernelCache]);
-        if ($this->containerLoader->has(self::KERNEL_LOGGER_NAME)) {
-            $this->kernelLogger = $this->containerLoader->get(self::KERNEL_LOGGER_NAME);
-        } else {
-            $this->kernelLogger = null;
+    }
+
+    private function tryToSetKernelLogger(): void
+    {
+        $definitionNames = ['kernel.logger', LoggerInterface::class];
+        foreach ($definitionNames as $definitionName) {
+            if ($this->containerLoader->has($definitionName)) {
+                $this->kernelLogger = $this->containerLoader->get($definitionName);
+                return;
+            }
         }
     }
 
     /**
      * @param Request $request
      * @return Response
-     * @throws Exception
      */
     public function handleRequest(Request $request): Response
     {
-        $request->logRequest($this->kernelLogger);
-        $request->validateIp();
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_BEFORE_REQUEST);
+        $this->kernelLogger?->info($request->getRequestLogMessage());
         try {
+            $this->router->validateIp($request->ip);
+            $this->eventHandler->tryTriggering(EventHandler::KERNEL_BEFORE_REQUEST, [$request]);
             $route = $this->router->getRoute($request);
         } catch (Exception $e) {
             return $this->router->getErrorResponse($e);
         }
         $this->containerLoader->add(['name' => Request::class, 'args' => [], 'object' => $request]);
-        $response = $route->execute($this->containerLoader, $request);
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_REQUEST);
+        $response = $this->router->executeRoute($route, $this->containerLoader, $request);
+        $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_REQUEST, [$response]);
         return $response;
     }
 
@@ -127,12 +131,9 @@ class Kernel
         if ($commandName === null) {
             $commandName = $this->commandLoader->getCommandNameFromServer();
         }
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_BEFORE_COMMAND);
-        if (str_starts_with($commandName, 'kernel:')) {
-            return $this->commandLoader->runCommandFromName($commandName, $this->containerLoader, $this);
-        }
+        $this->eventHandler->tryTriggering(EventHandler::KERNEL_BEFORE_COMMAND, [$commandName]);
         $code = $this->commandLoader->runCommandFromName($commandName, $this->containerLoader);
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_COMMAND);
+        $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_COMMAND, [$code]);
         return $code;
     }
 

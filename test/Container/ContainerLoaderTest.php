@@ -4,8 +4,9 @@ namespace LiteApi\Test\Container;
 
 use LiteApi\Container\Definition\ClassDefinition;
 use LiteApi\Container\Definition\InDirectDefinition;
+use LiteApi\Test\resources\classes\Logger;
+use LiteApi\Test\resources\classes\SimpleLogger;
 use PHPUnit\Framework\TestCase;
-use LiteApi\Component\Logger\SimpleLogger\SimpleLogger;
 use LiteApi\Container\ContainerLoader;
 use Psr\Log\LoggerInterface;
 
@@ -52,7 +53,7 @@ class ContainerLoaderTest extends TestCase
                 __DIR__ . '/../../tmp/test.log'
             ]
         ];
-        $container = new ContainerLoader([]);
+        $container = new ContainerLoader();
         $container->add($config);
         $this->assertLoggerIsSimpleLogger($container->get(SimpleLogger::class));
     }
@@ -69,20 +70,5 @@ class ContainerLoaderTest extends TestCase
         $container->addDefinitions($definitions);
         $this->assertLoggerIsSimpleLogger($container->get(SimpleLogger::class));
         $this->assertLoggerIsSimpleLogger($container->get(LoggerInterface::class));
-    }
-
-    /**
-     * @covers \LiteApi\Container\ContainerLoader::getDefinitions
-     */
-    public function testGetDefinitions(): void
-    {
-        $container = new ContainerLoader();
-        $container->createDefinitionsFromConfig(self::CONFIG);
-        $definitions = $container->getDefinitions([
-            SimpleLogger::class,
-            LoggerInterface::class
-        ]);
-        $this->assertTrue(is_a($definitions[0],     ClassDefinition::class));
-        $this->assertTrue(is_a($definitions[1], IndirectDefinition::class));
     }
 }

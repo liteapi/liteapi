@@ -16,6 +16,11 @@ class Extension implements ExtensionInterface
         $this->config = $config;
     }
 
+    public static function validateConfig(array $config): void
+    {
+
+    }
+
     public function registerServices(ContainerLoader $container): void
     {
 

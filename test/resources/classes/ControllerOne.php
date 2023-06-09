@@ -2,9 +2,9 @@
 
 namespace LiteApi\Test\resources\classes;
 
-use LiteApi\Route\AsRoute;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
+use LiteApi\Route\Attribute\AsRoute;
 
 class ControllerOne
 {
