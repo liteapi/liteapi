@@ -4,7 +4,7 @@ namespace LiteApi\Command\Internal;
 
 use LiteApi\Command\Input\InputInterface;
 use LiteApi\Command\Output\OutputInterface;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use ReflectionClass;
 
 class DebugContainerCommand extends KernelAwareCommand
@@ -17,7 +17,7 @@ class DebugContainerCommand extends KernelAwareCommand
     {
         $reflectionKernel = new ReflectionClass($this->kernel);
         $containerLoaderReflection = $reflectionKernel->getProperty('containerLoader');
-        /** @var ContainerLoader $containerLoader */
+        /** @var Container $containerLoader */
         $containerLoader = $containerLoaderReflection->getValue($this->kernel);
         $output->writeln(array_keys($containerLoader->definitions));
         return self::SUCCESS;

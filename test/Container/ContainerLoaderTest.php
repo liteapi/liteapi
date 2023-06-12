@@ -7,11 +7,11 @@ use LiteApi\Container\Definition\InDirectDefinition;
 use LiteApi\Test\resources\classes\Logger;
 use LiteApi\Test\resources\classes\SimpleLogger;
 use PHPUnit\Framework\TestCase;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \LiteApi\Container\ContainerLoader
+ * @covers \LiteApi\Container\Container
  */
 class ContainerLoaderTest extends TestCase
 {
@@ -30,11 +30,11 @@ class ContainerLoaderTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Container\ContainerLoader::createDefinitionsFromConfig
+     * @covers \LiteApi\Container\Container::createDefinitionsFromConfig
      */
     public function test__construct(): void
     {
-        $container = new ContainerLoader();
+        $container = new Container();
         $container->createDefinitionsFromConfig(self::CONFIG);
         $logger = $container->get(SimpleLogger::class);
         $this->assertLoggerIsSimpleLogger($logger);
@@ -43,7 +43,7 @@ class ContainerLoaderTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Container\ContainerLoader::add
+     * @covers \LiteApi\Container\Container::add
      */
     public function testAdd(): void
     {
@@ -53,20 +53,20 @@ class ContainerLoaderTest extends TestCase
                 __DIR__ . '/../../tmp/test.log'
             ]
         ];
-        $container = new ContainerLoader();
+        $container = new Container();
         $container->add($config);
         $this->assertLoggerIsSimpleLogger($container->get(SimpleLogger::class));
     }
 
     /**
-     * @covers \LiteApi\Container\ContainerLoader::addDefinitions
+     * @covers \LiteApi\Container\Container::addDefinitions
      */
     public function testAddDefinitions(): void
     {
-        $container = new ContainerLoader();
+        $container = new Container();
         $container->createDefinitionsFromConfig(self::CONFIG);
         $definitions = $container->definitions;
-        $container = new ContainerLoader();
+        $container = new Container();
         $container->addDefinitions($definitions);
         $this->assertLoggerIsSimpleLogger($container->get(SimpleLogger::class));
         $this->assertLoggerIsSimpleLogger($container->get(LoggerInterface::class));

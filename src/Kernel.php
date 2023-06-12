@@ -7,7 +7,7 @@ use LiteApi\Command\CommandsLoader;
 use LiteApi\Component\Cache\ClassWalker;
 use LiteApi\Component\Config\Wrapper\ConfigWrapper;
 use LiteApi\Component\Event\EventHandler;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Container\ParamsBag;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
@@ -37,7 +37,7 @@ class Kernel
     public bool $debug;
     public Router $router;
     public CommandsLoader $commandLoader;
-    public ContainerLoader $containerLoader;
+    public Container $containerLoader;
     private EventHandler $eventHandler;
     private AbstractAdapter $kernelCache;
     private ?LoggerInterface $kernelLogger = null;
@@ -72,7 +72,7 @@ class Kernel
             $this->makeCacheOnDestruct = false;
         }
         if (!$loaded) {
-            $this->containerLoader = new ContainerLoader();
+            $this->containerLoader = new Container();
             $this->router = new Router($config->trustedIps);
             $this->commandLoader = new CommandsLoader();
             foreach ($config->servicesDir as $serviceDir) {

@@ -3,7 +3,7 @@
 namespace LiteApi\Route;
 
 use Exception;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Exception\ProgrammerException;
 use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
@@ -70,7 +70,7 @@ class Router
         return $matchedRoute;
     }
 
-    public function executeRoute(Route $route, ContainerLoader $container, Request $request): Response
+    public function executeRoute(Route $route, Container $container, Request $request): Response
     {
         try {
             return $route->execute($container, $request);

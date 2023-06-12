@@ -4,7 +4,7 @@ namespace LiteApi\Route;
 
 use Exception;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Container\ContainerNotFoundException;
 use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
@@ -82,11 +82,11 @@ class Route
     }
 
     /**
-     * @param ContainerLoader $container
+     * @param Container $container
      * @param Request $request
      * @return Response
      */
-    public function execute(ContainerLoader $container, Request $request): Response
+    public function execute(Container $container, Request $request): Response
     {
         try {
             $reflectionClass = new ReflectionClass($this->className);
@@ -133,7 +133,7 @@ class Route
 
     /**
      * @param \ReflectionParameter[] $parameters
-     * @param ContainerLoader $container
+     * @param Container $container
      * @param Request $request
      * @return array
      * @throws KernelException
@@ -142,7 +142,7 @@ class Route
      * @throws \ReflectionException
      * @throws ContainerNotFoundException
      */
-    private function loadArguments(array $parameters, ContainerLoader $container, Request $request): array
+    private function loadArguments(array $parameters, Container $container, Request $request): array
     {
         $pathParameters = [];
         if ($this->regexPath !== null && preg_match($this->regexPath, $request->path, $pathParameters) === false) {

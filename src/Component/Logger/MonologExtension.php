@@ -3,7 +3,7 @@
 namespace LiteApi\Component\Logger;
 
 use LiteApi\Component\Extension\Extension;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Exception\ProgrammerException;
 
 class MonologExtension extends Extension
@@ -15,7 +15,7 @@ class MonologExtension extends Extension
     }
 
 
-    public function registerServices(ContainerLoader $container): void
+    public function registerServices(Container $container): void
     {
         /** @var array<string, MonologLoggerDefinition> $definitions */
         $definitions = [];

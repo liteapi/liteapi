@@ -4,7 +4,7 @@ namespace LiteApi\Component\Cache\Command;
 
 use LiteApi\Command\CommandsLoader;
 use LiteApi\Component\Extension\Extension;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Container\Definition\ClassDefinition;
 use LiteApi\Container\Definition\Definition;
 use LiteApi\Container\Definition\InDirectDefinition;
@@ -13,7 +13,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 class SymfonyCacheExtension extends Extension
 {
 
-    public function registerServices(ContainerLoader $container): void
+    public function registerServices(Container $container): void
     {
         $setKernelCache = !$container->has('kernel.cache');
         /** @var array<string, Definition> $definitions */

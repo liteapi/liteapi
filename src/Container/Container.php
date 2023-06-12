@@ -11,7 +11,7 @@ use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
 use Psr\Container\ContainerInterface;
 
-class ContainerLoader implements ContainerInterface
+class Container implements ContainerInterface
 {
 
     /**

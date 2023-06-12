@@ -4,7 +4,7 @@ namespace LiteApi\Component\Cache;
 
 use LiteApi\Command\AsCommand;
 use LiteApi\Command\CommandsLoader;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Exception\ProgrammerException;
 use LiteApi\Route\Attribute\AsRoute;
 use LiteApi\Route\Attribute\OnError;
@@ -22,7 +22,7 @@ class ClassWalker
     }
 
     /**
-     * @param ContainerLoader $containerLoader
+     * @param Container $containerLoader
      * @param Router $router
      * @param CommandsLoader $commandsLoader
      * @return void
@@ -30,9 +30,9 @@ class ClassWalker
      * @throws \ReflectionException
      */
     public function register(
-        ContainerLoader $containerLoader,
-        Router          $router,
-        CommandsLoader  $commandsLoader
+        Container      $containerLoader,
+        Router         $router,
+        CommandsLoader $commandsLoader
     ): void
     {
         if (is_file($this->servicePath) || !is_dir($this->servicePath)) {

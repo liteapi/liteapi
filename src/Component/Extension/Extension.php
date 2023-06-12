@@ -3,7 +3,7 @@
 namespace LiteApi\Component\Extension;
 
 use LiteApi\Command\CommandsLoader;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Route\Router;
 
 class Extension implements ExtensionInterface
@@ -21,7 +21,7 @@ class Extension implements ExtensionInterface
 
     }
 
-    public function registerServices(ContainerLoader $container): void
+    public function registerServices(Container $container): void
     {
 
     }

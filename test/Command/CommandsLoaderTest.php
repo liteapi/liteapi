@@ -4,7 +4,7 @@ namespace LiteApi\Test\Command;
 
 use LiteApi\Command\CommandsLoader;
 use PHPUnit\Framework\TestCase;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Test\resources\classes\CommandOne;
 
 /**
@@ -21,7 +21,7 @@ class CommandsLoaderTest extends TestCase
         $commandsLoader = new CommandsLoader();
         $commandsLoader->registerCommand('command:one', CommandOne::class);
         $this->expectOutputString('CommandOne is running');
-        $result = $commandsLoader->runCommandFromName('command:one', new ContainerLoader());
+        $result = $commandsLoader->runCommandFromName('command:one', new Container());
         $this->assertEquals(0, $result);
     }
 
