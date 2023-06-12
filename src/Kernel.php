@@ -18,8 +18,8 @@ use Symfony\Component\Cache\Adapter\AbstractAdapter;
 class Kernel
 {
 
-    public const VERSION = 005000;
-    public const VERSION_DOTTED = '0.5.0';
+    public const VERSION = 006000;
+    public const VERSION_DOTTED = '0.6.0';
     /* only for stable version
     public const VERSION_END_OF_LIFE = '06/2024';
     public const VERSION_END_OF_MAINTENANCE = '03/2024';
