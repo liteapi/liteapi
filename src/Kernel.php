@@ -132,7 +132,7 @@ class Kernel
             $commandName = $this->commandLoader->getCommandNameFromServer();
         }
         $this->eventHandler->tryTriggering(EventHandler::KERNEL_BEFORE_COMMAND, [$commandName]);
-        $code = $this->commandLoader->runCommandFromName($commandName, $this->containerLoader, $this);
+        $code = $this->commandLoader->runCommandFromName($commandName, $this->containerLoader);
         $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_COMMAND, [$code]);
         return $code;
     }

@@ -48,10 +48,9 @@ class CommandsLoader
     /**
      * @param string $commandName
      * @param Container $container
-     * @param null|Kernel $kernel
      * @return int
      */
-    public function runCommandFromName(string $commandName, Container $container, ?Kernel $kernel = null): int
+    public function runCommandFromName(string $commandName, Container $container): int
     {
         $stdout = new Stdout();
         try {
@@ -84,10 +83,6 @@ class CommandsLoader
             /* Inject services */
             if (is_subclass_of($command, ContainerAwareInterface::class)) {
                 $command->setContainer($container);
-            }
-            /* If $command is KernelAwareCommand set Kernel */
-            if ($kernel != null && is_subclass_of($command, KernelAwareCommand::class)) {
-                $command->setKernel($kernel);
             }
             return $command->execute($stdin, $stdout);
         } catch (Exception $e) {
