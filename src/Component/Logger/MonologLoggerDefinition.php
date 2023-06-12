@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Logger;
 
-use LiteApi\Component\Config\Env;
+use LiteApi\Component\Object\ObjectWrapper;
 use LiteApi\Container\Definition\DefinedDefinition;
 use Monolog\Logger;
 
@@ -24,10 +24,10 @@ class MonologLoggerDefinition extends DefinedDefinition
     {
         $logger = new Logger($this->name);
         foreach ($this->handlers as $handler) {
-            $logger->pushHandler(Env::createClassFromConfig($handler));
+            $logger->pushHandler(ObjectWrapper::parseArrayToObject($handler));
         }
         foreach ($this->processors as $processor) {
-            $logger->pushProcessor(Env::createClassFromConfig($processor));
+            $logger->pushProcessor(ObjectWrapper::parseArrayToObject($processor));
         }
         return $logger;
     }
