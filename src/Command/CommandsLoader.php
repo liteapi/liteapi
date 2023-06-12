@@ -7,13 +7,12 @@ use LiteApi\Command\Input\Stdin;
 use LiteApi\Command\Internal\CacheClearCommand;
 use LiteApi\Command\Internal\DebugCommandLoaderCommand;
 use LiteApi\Command\Internal\DebugContainerCommand;
-use LiteApi\Command\Internal\DebugCommand;
 use LiteApi\Command\Internal\DebugRouterCommand;
 use LiteApi\Command\Internal\KernelAwareCommand;
 use LiteApi\Command\Internal\WarmUpCacheCommand;
 use LiteApi\Command\Output\Stdout;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Container\Definition\ClassDefinition;
 use LiteApi\Kernel;
 use ReflectionClass;
@@ -23,7 +22,6 @@ class CommandsLoader
 {
 
     private const KERNEL_COMMANDS = [
-        'debug:all' => DebugCommand::class,
         'cache:warmup' => WarmUpCacheCommand::class,
         'cache:clear' => CacheClearCommand::class,
         'debug:container' => DebugContainerCommand::class,
@@ -49,11 +47,11 @@ class CommandsLoader
 
     /**
      * @param string $commandName
-     * @param ContainerLoader $container
+     * @param Container $container
      * @param null|Kernel $kernel
      * @return int
      */
-    public function runCommandFromName(string $commandName, ContainerLoader $container, ?Kernel $kernel = null): int
+    public function runCommandFromName(string $commandName, Container $container, ?Kernel $kernel = null): int
     {
         $stdout = new Stdout();
         try {
