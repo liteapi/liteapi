@@ -2,7 +2,9 @@
 
 namespace LiteApi\Component\Config\Wrapper;
 
-class ExtensionsWrapper extends \LiteApi\Component\Util\ArrayWrapper
+use LiteApi\Component\Util\ArrayWrapper;
+
+class ExtensionsWrapper extends ArrayWrapper
 {
 
     protected function wrap(array $config): void

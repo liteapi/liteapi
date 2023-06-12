@@ -48,4 +48,11 @@ abstract class ArrayWrapper
         }
     }
 
+    protected function assertHasOnlyPermittedKeys(array $item, array $keys): void
+    {
+        $notPermittedKeys = array_diff(array_keys($item), $keys);
+        if (!empty($notPermittedKeys)) {
+            throw new ProgrammerException('Array has not permitted keys: ' . implode(', ', $notPermittedKeys));
+        }
+    }
 }
