@@ -19,6 +19,7 @@ class EnvWrapper extends ArrayWrapper
         //$secretKey = 'SECRET_KEY';
 
         $this->assertHasKeys($config, [$envName, $debugName]);
+        $this->assertHasOnlyPermittedKeys($config, [$envName, $debugName]);
         if (!in_array($config[$envName], ['dev', 'prod', 'test'])) {
             throw new ProgrammerException('ENV must be one of this value: \'dev, prod, test\'');
         }

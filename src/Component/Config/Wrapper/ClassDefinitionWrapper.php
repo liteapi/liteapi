@@ -21,8 +21,8 @@ class ClassDefinitionWrapper extends ArrayWrapper
         $argsName = 'args';
         $settersName = 'setters';
 
-        $this->assertHasOnlyPermittedKeys($config, [$className, $argsName, $settersName]);
         $this->assertHasKeys($config, [$className, $argsName]);
+        $this->assertHasOnlyPermittedKeys($config, [$className, $argsName, $settersName]);
         $class = $config[$className];
         $this->assertIsString($class);
         $this->class = $class;

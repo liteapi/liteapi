@@ -15,6 +15,7 @@ class Setter extends ArrayWrapper
         $methodName = 'method';
         $argsName = 'args';
         $this->assertHasKeys($config, [$methodName, $argsName]);
+        $this->assertHasOnlyPermittedKeys($config, [$methodName, $argsName]);
 
         $method = $config[$methodName];
         $this->assertIsString($method);
