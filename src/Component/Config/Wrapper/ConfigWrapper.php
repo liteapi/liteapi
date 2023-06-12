@@ -13,6 +13,7 @@ class ConfigWrapper extends ArrayWrapper
     private const CONTAINER = 'container';
     private const EXTENSIONS = 'extensions';
     private const CACHE = 'cache';
+    private const KERNEL_SUBSCRIBER = 'kernelSubscriber';
 
     public EnvWrapper $envParams;
     public string $projectDir;
@@ -21,6 +22,7 @@ class ConfigWrapper extends ArrayWrapper
     public array $container;
     public array $extensions;
     public ClassDefinitionWrapper $cache;
+    public ?string $kernelSubscriber = null;
 
     public function __construct(EnvWrapper $env, array $config)
     {
@@ -31,6 +33,18 @@ class ConfigWrapper extends ArrayWrapper
 
     protected function wrap(array $config): void
     {
+        $this->assertHasOnlyPermittedKeys(
+            $config,
+            [
+                self::PROJECT_DIR,
+                self::TRUSTED_IPS,
+                self::SERVICES,
+                self::CONTAINER,
+                self::EXTENSIONS,
+                self::CACHE,
+                self::KERNEL_SUBSCRIBER
+            ]
+        );
         $this->assertHasKeys(
             $config,
             [
@@ -64,6 +78,12 @@ class ConfigWrapper extends ArrayWrapper
 
         $this->assertIsArray($config[self::CACHE]);
         $this->cache = new ClassDefinitionWrapper($config[self::CACHE]);
+
+        if (isset($config[self::KERNEL_SUBSCRIBER])) {
+            $kernelSubscriber = $config[self::KERNEL_SUBSCRIBER];
+            $this->assertIsString($kernelSubscriber);
+            $this->kernelSubscriber = $kernelSubscriber;
+        }
     }
 
     protected function resolveEnvParams(array $config): array

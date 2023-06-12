@@ -6,9 +6,10 @@ use Exception;
 use LiteApi\Command\CommandsLoader;
 use LiteApi\Component\Cache\ClassWalker;
 use LiteApi\Component\Config\Wrapper\ConfigWrapper;
-use LiteApi\Component\Event\EventHandler;
 use LiteApi\Container\Container;
 use LiteApi\Container\ParamsBag;
+use LiteApi\Event\Handler;
+use LiteApi\Event\KernelEvent;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
 use LiteApi\Route\Router;
@@ -38,7 +39,7 @@ class Kernel
     public Router $router;
     public CommandsLoader $commandLoader;
     public Container $containerLoader;
-    private EventHandler $eventHandler;
+    private Handler $eventHandler;
     private AbstractAdapter $kernelCache;
     private ?LoggerInterface $kernelLogger = null;
     private bool $makeCacheOnDestruct = true;
@@ -52,8 +53,8 @@ class Kernel
         $this->boot($config);
         $this->ensureContainerHasKernelServices();
         $this->tryToSetKernelLogger();
-        $this->eventHandler = new EventHandler();
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_BOOT);
+        $this->eventHandler = new Handler($config->kernelSubscriber);
+        $this->eventHandler->trigger(KernelEvent::AfterBoot, $this->containerLoader);
     }
 
     protected function boot(ConfigWrapper $config): void
@@ -111,14 +112,15 @@ class Kernel
         $this->kernelLogger?->info($request->getRequestLogMessage());
         try {
             $this->router->validateIp($request->ip);
-            $this->eventHandler->tryTriggering(EventHandler::KERNEL_BEFORE_REQUEST, [$request]);
+            $this->eventHandler->trigger(KernelEvent::BeforeRequest, $request);
             $route = $this->router->getRoute($request);
         } catch (Exception $e) {
+            $this->eventHandler->trigger(KernelEvent::RequestException, $e);
             return $this->router->getErrorResponse($e);
         }
         $this->containerLoader->add(['name' => Request::class, 'args' => [], 'object' => $request]);
         $response = $this->router->executeRoute($route, $this->containerLoader, $request);
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_REQUEST, [$response]);
+        $this->eventHandler->trigger(KernelEvent::AfterRequest, $response);
         return $response;
     }
 
@@ -131,15 +133,15 @@ class Kernel
         if ($commandName === null) {
             $commandName = $this->commandLoader->getCommandNameFromServer();
         }
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_BEFORE_COMMAND, [$commandName]);
+        $this->eventHandler->trigger(KernelEvent::BeforeCommand, $commandName);
         $code = $this->commandLoader->runCommandFromName($commandName, $this->containerLoader);
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_AFTER_COMMAND, [$code]);
+        $this->eventHandler->trigger(KernelEvent::AfterCommand, $code);
         return $code;
     }
 
     public function __destruct()
     {
-        $this->eventHandler->tryTriggering(EventHandler::KERNEL_ON_DESTRUCT);
+        $this->eventHandler->trigger(KernelEvent::OnDestruct, $this->containerLoader);
         if (!$this->debug && $this->makeCacheOnDestruct) {
             unset($this->containerLoader->definitions[__CLASS__]);
             foreach (self::PROPERTIES_TO_CACHE as $property => $cacheName) {
