@@ -86,8 +86,8 @@ class Kernel
 
     private function ensureContainerHasKernelServices(): void
     {
-        if (!$this->containerLoader->has('kernel')) {
-            $this->containerLoader->add(['name' => 'kernel', 'object' => $this]);
+        if (!$this->containerLoader->has(__CLASS__)) {
+            $this->containerLoader->add(['name' => __CLASS__, 'object' => $this]);
         }
     }
 
@@ -141,6 +141,7 @@ class Kernel
     {
         $this->eventHandler->tryTriggering(EventHandler::KERNEL_ON_DESTRUCT);
         if (!$this->debug && $this->makeCacheOnDestruct) {
+            unset($this->containerLoader->definitions[__CLASS__]);
             foreach (self::PROPERTIES_TO_CACHE as $property => $cacheName) {
                 $cacheItem = $this->kernelCache->getItem($cacheName);
                 $cacheItem->set($this->$property);
