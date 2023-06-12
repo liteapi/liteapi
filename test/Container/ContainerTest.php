@@ -2,9 +2,6 @@
 
 namespace LiteApi\Test\Container;
 
-use LiteApi\Container\Definition\ClassDefinition;
-use LiteApi\Container\Definition\InDirectDefinition;
-use LiteApi\Test\resources\classes\Logger;
 use LiteApi\Test\resources\classes\SimpleLogger;
 use PHPUnit\Framework\TestCase;
 use LiteApi\Container\Container;
@@ -13,7 +10,7 @@ use Psr\Log\LoggerInterface;
 /**
  * @covers \LiteApi\Container\Container
  */
-class ContainerLoaderTest extends TestCase
+class ContainerTest extends TestCase
 {
 
     public const CONFIG = [
