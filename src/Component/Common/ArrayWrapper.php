@@ -1,8 +1,7 @@
 <?php
 
-namespace LiteApi\Component\Util;
+namespace LiteApi\Component\Common;
 
-use Exception;
 use LiteApi\Exception\ProgrammerException;
 
 abstract class ArrayWrapper

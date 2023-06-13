@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Logger;
 
-use LiteApi\Component\Object\ObjectWrapper;
+use LiteApi\Component\Common\ObjectWrapper;
 use LiteApi\Container\Definition\DefinedDefinition;
 use Monolog\Logger;
 

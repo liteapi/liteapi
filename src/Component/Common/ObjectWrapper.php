@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Component\Object;
+namespace LiteApi\Component\Common;
 
 use LiteApi\Exception\ProgrammerException;
 use ReflectionClass;

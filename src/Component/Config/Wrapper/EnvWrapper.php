@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Config\Wrapper;
 
-use LiteApi\Component\Util\ArrayWrapper;
+use LiteApi\Component\Common\ArrayWrapper;
 use LiteApi\Exception\ProgrammerException;
 
 class EnvWrapper extends ArrayWrapper
