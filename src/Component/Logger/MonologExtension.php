@@ -9,9 +9,12 @@ use LiteApi\Exception\ProgrammerException;
 class MonologExtension extends Extension
 {
 
-    public static function validateConfig(array $config): void
+    public function validateConfig(): void
     {
-
+        foreach ($this->config as $item) {
+            $this->assertHasOnlyPermittedKeys($item, ['class', 'handlers', 'processors']);
+            $this->assertHasKeys($item, ['handlers', 'processors']);
+        }
     }
 
 

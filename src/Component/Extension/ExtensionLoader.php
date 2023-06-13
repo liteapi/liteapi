@@ -38,6 +38,7 @@ class ExtensionLoader
             /** @var ExtensionInterface $extension */
             $extension = new $extensionClass();
             $extension->loadConfig($extensionConfig);
+            $extension->validateConfig();
             $extension->registerServices($container);
             $extension->registerRoutes($router);
             $extension->registerCommands($commandLoader);
