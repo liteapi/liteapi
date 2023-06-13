@@ -38,7 +38,7 @@ class Kernel
     public bool $debug;
     public Router $router;
     public CommandsLoader $commandLoader;
-    public Container $containerLoader;
+    public Container $container;
     private Handler $eventHandler;
     private AbstractAdapter $kernelCache;
     private ?LoggerInterface $kernelLogger = null;
@@ -54,7 +54,7 @@ class Kernel
         $this->ensureContainerHasKernelServices();
         $this->tryToSetKernelLogger();
         $this->eventHandler = new Handler($config->kernelSubscriber);
-        $this->eventHandler->trigger(KernelEvent::AfterBoot, $this->containerLoader);
+        $this->eventHandler->trigger(KernelEvent::AfterBoot, $this->container);
     }
 
     protected function boot(ConfigWrapper $config): void
@@ -73,22 +73,22 @@ class Kernel
             $this->makeCacheOnDestruct = false;
         }
         if (!$loaded) {
-            $this->containerLoader = new Container();
+            $this->container = new Container();
             $this->router = new Router($config->trustedIps);
             $this->commandLoader = new CommandsLoader();
             foreach ($config->servicesDir as $serviceDir) {
                 $classWalker = new ClassWalker($serviceDir);
-                $classWalker->register($this->containerLoader, $this->router, $this->commandLoader);
+                $classWalker->register($this->container, $this->router, $this->commandLoader);
             }
-            $this->containerLoader->createDefinitionsFromConfig($config->container);
-            $this->containerLoader->add(['name' => ParamsBag::class, 'args' => [$config->envParams->params]]);
+            $this->container->createDefinitionsFromConfig($config->container);
+            $this->container->add(['name' => ParamsBag::class, 'args' => [$config->envParams->params]]);
         }
     }
 
     private function ensureContainerHasKernelServices(): void
     {
-        if (!$this->containerLoader->has(__CLASS__)) {
-            $this->containerLoader->add(['name' => __CLASS__, 'object' => $this]);
+        if (!$this->container->has(__CLASS__)) {
+            $this->container->add(['name' => __CLASS__, 'object' => $this]);
         }
     }
 
@@ -96,8 +96,8 @@ class Kernel
     {
         $definitionNames = ['kernel.logger', LoggerInterface::class];
         foreach ($definitionNames as $definitionName) {
-            if ($this->containerLoader->has($definitionName)) {
-                $this->kernelLogger = $this->containerLoader->get($definitionName);
+            if ($this->container->has($definitionName)) {
+                $this->kernelLogger = $this->container->get($definitionName);
                 return;
             }
         }
@@ -118,8 +118,8 @@ class Kernel
             $this->eventHandler->trigger(KernelEvent::RequestException, $e);
             return $this->router->getErrorResponse($e);
         }
-        $this->containerLoader->add(['name' => Request::class, 'args' => [], 'object' => $request]);
-        $response = $this->router->executeRoute($route, $this->containerLoader, $request);
+        $this->container->add(['name' => Request::class, 'args' => [], 'object' => $request]);
+        $response = $this->router->executeRoute($route, $this->container, $request);
         $this->eventHandler->trigger(KernelEvent::AfterRequest, $response);
         return $response;
     }
@@ -134,16 +134,16 @@ class Kernel
             $commandName = $this->commandLoader->getCommandNameFromServer();
         }
         $this->eventHandler->trigger(KernelEvent::BeforeCommand, $commandName);
-        $code = $this->commandLoader->runCommandFromName($commandName, $this->containerLoader);
+        $code = $this->commandLoader->runCommandFromName($commandName, $this->container);
         $this->eventHandler->trigger(KernelEvent::AfterCommand, $code);
         return $code;
     }
 
     public function __destruct()
     {
-        $this->eventHandler->trigger(KernelEvent::OnDestruct, $this->containerLoader);
+        $this->eventHandler->trigger(KernelEvent::OnDestruct, $this->container);
         if (!$this->debug && $this->makeCacheOnDestruct) {
-            unset($this->containerLoader->definitions[__CLASS__]);
+            unset($this->container->definitions[__CLASS__]);
             foreach (self::PROPERTIES_TO_CACHE as $property => $cacheName) {
                 $cacheItem = $this->kernelCache->getItem($cacheName);
                 $cacheItem->set($this->$property);

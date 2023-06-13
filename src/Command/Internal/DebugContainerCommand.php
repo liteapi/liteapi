@@ -27,10 +27,10 @@ class DebugContainerCommand extends Command implements ContainerAwareInterface
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $reflectionKernel = new ReflectionClass($this->kernel());
-        $containerLoaderReflection = $reflectionKernel->getProperty('containerLoader');
-        /** @var Container $containerLoader */
-        $containerLoader = $containerLoaderReflection->getValue($this->kernel());
-        $output->writeln(array_keys($containerLoader->definitions));
+        $containerLoaderReflection = $reflectionKernel->getProperty('container');
+        /** @var Container $container */
+        $container = $containerLoaderReflection->getValue($this->kernel());
+        $output->writeln(array_keys($container->definitions));
         return self::SUCCESS;
     }
 }
