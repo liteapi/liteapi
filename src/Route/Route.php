@@ -85,6 +85,7 @@ class Route
      * @param Container $container
      * @param Request $request
      * @return Response
+     * @throws ProgrammerException|Exception
      */
     public function execute(Container $container, Request $request): Response
     {
@@ -113,21 +114,19 @@ class Route
             if (is_subclass_of($class, ContainerAwareInterface::class)) {
                 $class->setContainer($container);
             }
+        } catch (Exception $e) {
+            throw new ProgrammerException('Error while loading route, see previous exception', previous: $e);
+        }
 
-            $result = $reflectionMethod->invokeArgs($class, $args);
-            if ($result instanceof Response) {
-                return $result;
-            } elseif (is_array($result)) {
-                return new Response($result);
-            } elseif (is_string($result)) {
-                return new Response($result);
-            } else {
-                throw new ProgrammerException('Invalid object type of response: ' . var_export($result, true));
-            }
-        } catch (HttpException $httpExc) {
-            return new Response($httpExc->getMessage(), ResponseStatus::from($httpExc->getCode()));
-        } catch (Exception $exc) {
-            return new Response('Internal server error occurred', ResponseStatus::InternalServerError);
+        $result = $reflectionMethod->invokeArgs($class, $args);
+        if ($result instanceof Response) {
+            return $result;
+        } elseif (is_array($result)) {
+            return new Response($result);
+        } elseif (is_string($result)) {
+            return new Response($result);
+        } else {
+            throw new ProgrammerException('Invalid object type of response: ' . var_export($result, true));
         }
     }
 

@@ -27,7 +27,7 @@ class Kernel
     */
 
     private const PROPERTIES_TO_CACHE = [
-        'containerLoader' => 'kernel.container',
+        'container' => 'kernel.container',
         'router' => 'kernel.router',
         'commandLoader' => 'kernel.command'
     ];
@@ -114,12 +114,12 @@ class Kernel
             $this->router->validateIp($request->ip);
             $this->eventHandler->trigger(KernelEvent::BeforeRequest, $request);
             $route = $this->router->getRoute($request);
+            $this->container->add(['name' => Request::class, 'args' => [], 'object' => $request]);
+            $response = $route->execute($this->container, $request);
         } catch (Exception $e) {
             $this->eventHandler->trigger(KernelEvent::RequestException, $e);
             return $this->router->getErrorResponse($e);
         }
-        $this->container->add(['name' => Request::class, 'args' => [], 'object' => $request]);
-        $response = $this->router->executeRoute($route, $this->container, $request);
         $this->eventHandler->trigger(KernelEvent::AfterRequest, $response);
         return $response;
     }
