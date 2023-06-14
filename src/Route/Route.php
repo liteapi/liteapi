@@ -3,15 +3,14 @@
 namespace LiteApi\Route;
 
 use Exception;
+use LiteApi\Component\Common\BuiltinValue;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Container;
 use LiteApi\Container\ContainerNotFoundException;
 use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
-use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
-use LiteApi\Http\ResponseStatus;
 use LiteApi\Route\Attribute\HasJsonContent;
 use LiteApi\Route\Attribute\HasQuery;
 use Psr\Container\ContainerExceptionInterface;
@@ -62,9 +61,9 @@ class Route
                 $parameterType = $parameter->getType();
                 if ($parameterType->isBuiltin()) {
                     $parameterTypeName = $parameterType->getName();
-                    if ($parameterTypeName === 'string') {
+                    if ($parameterTypeName === BuiltinValue::String->value) {
                         $this->regexPath = str_replace('{' . $pathParameters[$parameterIndex] . '}', '(\w+)', $this->regexPath);
-                    } elseif ($parameterTypeName === 'int') {
+                    } elseif ($parameterTypeName === BuiltinValue::Int->value) {
                         $this->regexPath = str_replace('{' . $pathParameters[$parameterIndex] . '}', '(\d+)', $this->regexPath);
                     } else {
                         throw new ProgrammerException(sprintf('Not supported builtin type %s for parameter %s', $parameterTypeName, $parameter->getName()));
@@ -162,11 +161,8 @@ class Route
                     $args[] = $container->get($type->getName());
                 }
             } else {
-                if ($type->getName() === 'int') {
-                    $args[] = (int) $pathParameters[$pathParameterIndex];
-                } else {
-                    $args[] = $pathParameters[$pathParameterIndex];
-                }
+                $enumType = BuiltinValue::from($type->getName());
+                $args[] = $enumType->convertValue($pathParameters[$pathParameterIndex]);
                 $pathParameterIndex++;
             }
         }

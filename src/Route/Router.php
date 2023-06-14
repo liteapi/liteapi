@@ -3,8 +3,6 @@
 namespace LiteApi\Route;
 
 use Exception;
-use LiteApi\Container\Container;
-use LiteApi\Exception\ProgrammerException;
 use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
@@ -68,24 +66,6 @@ class Router
             throw new HttpException($methodNotAllowed ? ResponseStatus::MethodNotAllowed : ResponseStatus::NotFound);
         }
         return $matchedRoute;
-    }
-
-    public function executeRoute(Route $route, Container $container, Request $request): Response
-    {
-        try {
-            return $route->execute($container, $request);
-        } catch (HttpException $httpException) {
-            if (isset($this->onError[$httpException->status->value])) {
-                return $this->onError[$httpException->status->value]($httpException);
-            }
-            return new Response($httpException->getMessage(), $httpException->status);
-        } catch (Exception $e) {
-            $internalError = ResponseStatus::InternalServerError;
-            if (isset($this->onError[$internalError->value])) {
-                return $this->onError[$internalError->value]($e);
-            }
-            return new Response($internalError->getText(), $internalError);
-        }
     }
 
     /**
