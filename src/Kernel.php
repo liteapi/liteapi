@@ -117,7 +117,11 @@ class Kernel
             $this->container->add(['name' => Request::class, 'args' => [], 'object' => $request]);
             $response = $route->execute($this->container, $request);
         } catch (Exception $e) {
-            $this->eventHandler->trigger(KernelEvent::RequestException, $e);
+            try {
+                $this->eventHandler->trigger(KernelEvent::RequestException, $e);
+            } catch (Exception $eventException) {
+                return $this->router->getErrorResponse($eventException);
+            }
             return $this->router->getErrorResponse($e);
         }
         $this->eventHandler->trigger(KernelEvent::AfterRequest, $response);
