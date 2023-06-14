@@ -17,7 +17,7 @@ class Handler
      */
     public function __construct(?string $className)
     {
-        if ($className == null) {
+        if ($className === null) {
             $this->className = '';
             $this->definitions = [];
         } else {

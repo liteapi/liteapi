@@ -62,9 +62,9 @@ class Route
                 $parameterType = $parameter->getType();
                 if ($parameterType->isBuiltin()) {
                     $parameterTypeName = $parameterType->getName();
-                    if ($parameterTypeName == 'string') {
+                    if ($parameterTypeName === 'string') {
                         $this->regexPath = str_replace('{' . $pathParameters[$parameterIndex] . '}', '(\w+)', $this->regexPath);
-                    } elseif ($parameterTypeName == 'int') {
+                    } elseif ($parameterTypeName === 'int') {
                         $this->regexPath = str_replace('{' . $pathParameters[$parameterIndex] . '}', '(\d+)', $this->regexPath);
                     } else {
                         throw new ProgrammerException(sprintf('Not supported builtin type %s for parameter %s', $parameterTypeName, $parameter->getName()));
@@ -155,15 +155,15 @@ class Route
             /** @var ReflectionNamedType $type */
             $type = $parameter->getType();
             if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
-                if ($type->getName() == Request::class) {
+                if ($type->getName() === Request::class) {
                     $args[] = $request;
-                } elseif ($type->getName() == Response::class) {
+                } elseif ($type->getName() === Response::class) {
                     $args[] = new Response();
                 } else {
                     $args[] = $container->get($type->getName());
                 }
             } else {
-                if ($type->getName() == 'int') {
+                if ($type->getName() === 'int') {
                     $args[] = (int) $pathParameters[$pathParameterIndex];
                 } else {
                     $args[] = $pathParameters[$pathParameterIndex];
