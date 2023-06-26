@@ -41,5 +41,11 @@
             "@unit",
             "@stan"
         ]
+    },
+    "archive": {
+        "exclude": [
+            ".github",
+            "docs/"
+        ]
     }
 }
