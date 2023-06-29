@@ -39,7 +39,7 @@ class MonologExtension extends Extension
             }
             $definitions[$loggerName] = new MonologLoggerDefinition($loggerName, $handlers, $processors);
         }
-        $container->addDefinitions($definitions);
+        $container->load($definitions);
     }
 
     /**

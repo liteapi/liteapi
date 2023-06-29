@@ -18,7 +18,6 @@ class KernelTest extends TestCase
 
     private function createKernel(): Kernel
     {
-        $env = new Env();
         $configDir = __DIR__ . '/resources/config/base_config';
         $configLoader = new ConfigLoader($configDir);
         $config = $configLoader->getConfig();

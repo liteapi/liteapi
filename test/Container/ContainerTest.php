@@ -56,7 +56,7 @@ class ContainerTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Container\Container::addDefinitions
+     * @covers \LiteApi\Container\Container::load
      */
     public function testAddDefinitions(): void
     {
@@ -64,7 +64,7 @@ class ContainerTest extends TestCase
         $container->createDefinitionsFromConfig(self::CONFIG);
         $definitions = $container->definitions;
         $container = new Container();
-        $container->addDefinitions($definitions);
+        $container->load($definitions);
         $this->assertLoggerIsSimpleLogger($container->get(SimpleLogger::class));
         $this->assertLoggerIsSimpleLogger($container->get(LoggerInterface::class));
     }

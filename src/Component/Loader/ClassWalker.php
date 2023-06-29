@@ -1,75 +1,64 @@
 <?php
 
-namespace LiteApi\Component\Cache;
+namespace LiteApi\Component\Loader;
 
 use LiteApi\Command\AsCommand;
-use LiteApi\Command\CommandsLoader;
-use LiteApi\Container\Container;
+use LiteApi\Container\Definition\ClassDefinition;
 use LiteApi\Exception\ProgrammerException;
 use LiteApi\Route\Attribute\AsRoute;
 use LiteApi\Route\Attribute\OnError;
-use LiteApi\Route\Router;
+use LiteApi\Route\Route;
 use ReflectionClass;
 
 class ClassWalker
 {
 
-    private string $servicePath;
-
-    public function __construct(string $servicePath)
-    {
-        $this->servicePath = $servicePath;
-    }
-
     /**
-     * @param Container $containerLoader
-     * @param Router $router
-     * @param CommandsLoader $commandsLoader
-     * @return void
+     * @param string $servicePath
+     * @return DefinitionsTransfer
      * @throws ProgrammerException
      * @throws \ReflectionException
      */
     public function register(
-        Container      $containerLoader,
-        Router         $router,
-        CommandsLoader $commandsLoader
-    ): void
+        string $servicePath
+    ): DefinitionsTransfer
     {
-        if (is_file($this->servicePath) || !is_dir($this->servicePath)) {
-            //TODO: this will be covered soon
+        $services = [];
+        $commands = [];
+        $routes = [];
+        $onError = [];
+        if (is_file($servicePath) || !is_dir($servicePath)) {
             throw new ProgrammerException('Cannot load path that is not directory');
         }
         $classFinder = new ClassFinder();
-        foreach ($classFinder->getAllClassInDir($this->servicePath) as $className) {
+        foreach ($classFinder->getAllClassInDir($servicePath) as $className) {
             /* Add to container */
-            $containerLoader->add(['name' => $className]);
+            $services[$className] = new ClassDefinition($className, []);
             /* Add routes or command if exists */
             $reflectionClass = new ReflectionClass($className);
             $commandAttribute = $reflectionClass->getAttributes(AsCommand::class);
             if (!empty($commandAttribute)) {
-                $commandsLoader->registerCommand($commandAttribute[0]->getArguments()[0], $className);
+                $commands[$commandAttribute[0]->getArguments()[0]] = $className;
             }
             foreach ($reflectionClass->getMethods() as $method) {
                 $attributes = $method->getAttributes(AsRoute::class);
                 if (!empty($attributes)) {
                     $attribute = $attributes[0];
                     $arguments = $attribute->getArguments();
-                    $router->registerRoute(
-                        $className,
+                    $routes[] = new Route($className,
                         $method->getName(),
                         $arguments[0],
-                        $arguments[1] ?? []);
+                        $arguments[1] ?? []
+                    );
                 }
                 $attributes = $method->getAttributes(OnError::class);
                 if (!empty($attributes)) {
                     $attribute = $attributes[0];
                     $arguments = $attribute->getArguments();
-                    $router->registerOnError(
-                        $arguments[0]->value,
-                        $className . '::' . $method->getName()
-                    );
+                    $onError[$arguments[0]->value] = $className . '::' . $method->getName();
                 }
             }
         }
+        return new DefinitionsTransfer($services, $commands, $routes, $onError);
     }
 }

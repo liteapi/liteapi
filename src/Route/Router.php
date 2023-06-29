@@ -96,4 +96,22 @@ class Router
     {
         $this->onError[$statusCode] = $methodName;
     }
+
+    /**
+     * @param Route[] $routes
+     * @return void
+     */
+    public function load(array $routes): void
+    {
+        $this->routes = array_merge($this->routes, $routes);
+    }
+
+    /**
+     * @param array<int,string> $onErrors
+     * @return void
+     */
+    public function loadOnError(array $onErrors): void
+    {
+        $this->onError = array_merge($this->onError, $onErrors);
+    }
 }

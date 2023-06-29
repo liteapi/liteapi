@@ -27,13 +27,13 @@ enum QueryType
             case self::String:
                 break;
             case self::Int:
-                if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
                     throw new HttpException(ResponseStatus::BadRequest, $value . 'must be valid integer');
                 }
                 $value = (int) $value;
                 break;
             case self::Float:
-                if (!filter_var($value, FILTER_VALIDATE_FLOAT)) {
+                if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
                     throw new HttpException(ResponseStatus::BadRequest, $value . 'must be valid float');
                 }
                 $value = (float) $value;

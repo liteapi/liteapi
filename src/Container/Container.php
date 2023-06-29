@@ -95,7 +95,7 @@ class Container implements ContainerInterface
      * @param array<string,Definition> $definitions
      * @return void
      */
-    public function addDefinitions(array $definitions): void
+    public function load(array $definitions): void
     {
         foreach ($definitions as $id => $definition) {
             $this->definitions[$id] = $definition;

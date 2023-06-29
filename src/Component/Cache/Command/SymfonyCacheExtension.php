@@ -10,6 +10,9 @@ use LiteApi\Container\Definition\Definition;
 use LiteApi\Container\Definition\InDirectDefinition;
 use Symfony\Contracts\Cache\CacheInterface;
 
+/**
+ * Must be moved to liteapi/symfony-extension
+ */
 class SymfonyCacheExtension extends Extension
 {
 
@@ -26,13 +29,11 @@ class SymfonyCacheExtension extends Extension
                 $setKernelCache = false;
             }
         }
-        $container->addDefinitions($definitions);
+        $container->load($definitions);
     }
 
     public function registerCommands(CommandsLoader $commandLoader): void
     {
-        $commandLoader->registerCommand('cache:clear', SymfonyCacheClearCommand::class);
-        $commandLoader->registerCommand('cache:warmup', SymfonyCacheWarmupCommand::class);
     }
 
 }

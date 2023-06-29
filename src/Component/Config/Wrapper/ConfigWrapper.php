@@ -17,17 +17,18 @@ class ConfigWrapper extends ArrayWrapper
 
     public EnvWrapper $envParams;
     public string $projectDir;
+    /** @var string[] */
     public array $trustedIps;
+    /** @var string[] */
     public array $servicesDir;
     public array $container;
     public array $extensions;
     public ClassDefinitionWrapper $cache;
     public ?string $kernelSubscriber = null;
 
-    public function __construct(EnvWrapper $env, array $config)
+    public function __construct(array $config, EnvWrapper $envWrapper)
     {
-        $this->envParams = $env;
-        $config = $this->resolveEnvParams($config);
+        $this->envParams = $envWrapper;
         parent::__construct($config);
     }
 
@@ -85,20 +86,4 @@ class ConfigWrapper extends ArrayWrapper
             $this->kernelSubscriber = $kernelSubscriber;
         }
     }
-
-    protected function resolveEnvParams(array $config): array
-    {
-        return $config;
-        //TODO: make env params
-//        $configJson = json_encode($config);
-//        $pregResult = preg_match_all('/(%env\(.*\))/', $configJson, $matches);
-//        var_dump($matches);
-//        if ($pregResult > 0) {
-//            foreach ($matches as $match) {
-//
-//            }
-//        }
-//        return json_decode($configJson, true);
-    }
-
 }

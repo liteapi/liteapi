@@ -14,12 +14,11 @@ class EnvWrapper extends ArrayWrapper
 
     protected function wrap(array $config): void
     {
-        $envName = 'ENV';
-        $debugName = 'DEBUG';
-        //$secretKey = 'SECRET_KEY';
+        $envName = 'APP_ENV';
+        $debugName = 'APP_DEBUG';
+        //$secretKey = 'APP_SECRET_KEY';
 
         $this->assertHasKeys($config, [$envName, $debugName]);
-        $this->assertHasOnlyPermittedKeys($config, [$envName, $debugName]);
         if (!in_array($config[$envName], ['dev', 'prod', 'test'])) {
             throw new ProgrammerException('ENV must be one of this value: \'dev, prod, test\'');
         }
