@@ -13,7 +13,7 @@ class MonologExtension extends Extension
     {
         foreach ($this->config as $item) {
             $this->assertHasOnlyPermittedKeys($item, ['class', 'handlers', 'processors']);
-            $this->assertHasKeys($item, ['handlers', 'processors']);
+            $this->assertHasKeys($item, ['handlers']);
         }
     }
 
