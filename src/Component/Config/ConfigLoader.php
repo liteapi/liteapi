@@ -61,16 +61,18 @@ class ConfigLoader
         $result = array_walk_recursive(
             $config,
             function (&$item): void {
-                if (str_contains($item, '%env')) {
-                    $pregResult = preg_match('/%(?<env>env)\(((?<type>\w+):)?(?<name>\w+)\)%/', $item, $matches);
-                    if ($pregResult > 0) {
-                        $type = $matches['type'] ?? null;
-                        $name = $matches['name'];
-                        $value = $this->getEnvParam($name, $type);
-                        $item = str_replace($matches[0], $value, $item);
+                if (is_string($item)) {
+                    if (str_contains($item, '%env')) {
+                        $pregResult = preg_match('/%(?<env>env)\(((?<type>\w+):)?(?<name>\w+)\)%/', $item, $matches);
+                        if ($pregResult > 0) {
+                            $type = $matches['type'] ?? null;
+                            $name = $matches['name'];
+                            $value = $this->getEnvParam($name, $type);
+                            $item = str_replace($matches[0], $value, $item);
+                        }
+                    } elseif (str_contains($item, '%project_dir%')) {
+                        $item = str_replace('%project_dir%', $this->projectDir, $item);
                     }
-                } elseif (str_contains($item, '%project_dir%')) {
-                    $item = str_replace('%project_dir%', $this->projectDir, $item);
                 }
             }
         );
