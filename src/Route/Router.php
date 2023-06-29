@@ -106,6 +106,9 @@ class Router
      */
     public function load(array $routes): void
     {
+        foreach ($routes as $route) {
+            $route->makeRegexPath();
+        }
         $this->routes = array_merge($this->routes, $routes);
     }
 
