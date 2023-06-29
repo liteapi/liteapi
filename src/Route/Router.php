@@ -51,6 +51,9 @@ class Router
      */
     public function getRoute(Request $request): Route
     {
+        if ($request->path === '') {
+            $request->path = '/';
+        }
         $methodNotAllowed = false;
         foreach ($this->routes as $route) {
             if (preg_match($route->regexPath, $request->path) === 1) {

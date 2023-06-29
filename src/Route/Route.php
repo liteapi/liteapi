@@ -78,6 +78,9 @@ class Route
         if (!empty($pathParameters)) {
             throw new ProgrammerException('Missing value for :' . implode(', ', $pathParameters));
         }
+        if ($this->regexPath === '') {
+            $this->regexPath = '/';
+        }
     }
 
     /**
