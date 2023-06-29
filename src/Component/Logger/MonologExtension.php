@@ -37,7 +37,11 @@ class MonologExtension extends Extension
             if (isset($aliasProcessors)) {
                 $processors += $aliasProcessors;
             }
-            $definitions[$loggerName] = new MonologLoggerDefinition($loggerName, $handlers, $processors);
+            $definitions[$loggerName] = new MonologLoggerDefinition(
+                $loggerName,
+                $handlers ?? [],
+                $processors ?? []
+            );
         }
         $container->load($definitions);
     }
