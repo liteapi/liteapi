@@ -30,18 +30,14 @@ class MonologExtension extends Extension
                 $aliasProcessors = $definition->processors;
             }
             $handlers = $loggerConfig['handlers'];
-            $processors = $loggerConfig['processors'];
+            $processors = $loggerConfig['processors'] ?? [];
             if (isset($aliasHandlers)) {
                 $handlers += $aliasHandlers;
             }
             if (isset($aliasProcessors)) {
                 $processors += $aliasProcessors;
             }
-            $definitions[$loggerName] = new MonologLoggerDefinition(
-                $loggerName,
-                $handlers ?? [],
-                $processors ?? []
-            );
+            $definitions[$loggerName] = new MonologLoggerDefinition($loggerName, $handlers, $processors);
         }
         $container->load($definitions);
     }
