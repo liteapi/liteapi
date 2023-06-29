@@ -4,17 +4,15 @@ namespace LiteApi\Command;
 
 use Exception;
 use LiteApi\Command\Input\Stdin;
-use LiteApi\Command\Internal\CacheClearCommand;
-use LiteApi\Command\Internal\DebugCommandLoaderCommand;
-use LiteApi\Command\Internal\DebugContainerCommand;
-use LiteApi\Command\Internal\DebugRouterCommand;
-use LiteApi\Command\Internal\KernelAwareCommand;
-use LiteApi\Command\Internal\WarmUpCacheCommand;
+use LiteApi\Command\Internal\CacheClear;
+use LiteApi\Command\Internal\CacheWarmup;
+use LiteApi\Command\Internal\DebugCommand;
+use LiteApi\Command\Internal\DebugContainer;
+use LiteApi\Command\Internal\DebugRouter;
 use LiteApi\Command\Output\Stdout;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Container;
 use LiteApi\Container\Definition\ClassDefinition;
-use LiteApi\Kernel;
 use ReflectionClass;
 use ReflectionNamedType;
 
@@ -22,11 +20,11 @@ class CommandsLoader
 {
 
     private const KERNEL_COMMANDS = [
-        'cache:warmup' => WarmUpCacheCommand::class,
-        'cache:clear' => CacheClearCommand::class,
-        'debug:container' => DebugContainerCommand::class,
-        'debug:router' => DebugRouterCommand::class,
-        'debug:command' => DebugCommandLoaderCommand::class
+        'cache:warmup' => CacheWarmup::class,
+        'cache:clear' => CacheClear::class,
+        'debug:container' => DebugContainer::class,
+        'debug:router' => DebugRouter::class,
+        'debug:command' => DebugCommand::class
     ];
 
     /**
@@ -94,6 +92,15 @@ class CommandsLoader
             ]);
             return Command::FAILURE;
         }
+    }
+
+    /**
+     * @param array<string,string> $commands
+     * @return void
+     */
+    public function load(array $commands): void
+    {
+        $this->command = array_merge($this->command, $commands);
     }
 
     public function getCommandNameFromServer(): string

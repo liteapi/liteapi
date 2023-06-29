@@ -11,7 +11,7 @@ use LiteApi\Container\Container;
 use LiteApi\Kernel;
 use ReflectionClass;
 
-class DebugContainerCommand extends Command implements ContainerAwareInterface
+class DebugContainer extends Command implements ContainerAwareInterface
 {
 
     use ContainerAwareTrait;

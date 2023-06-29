@@ -8,10 +8,10 @@ use LiteApi\Command\Output\OutputInterface;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
 use LiteApi\Kernel;
+use LiteApi\Route\Router;
 use ReflectionClass;
-use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
-class CacheClearCommand extends Command implements ContainerAwareInterface
+class DebugRouter extends Command implements ContainerAwareInterface
 {
 
     use ContainerAwareTrait;
@@ -26,10 +26,15 @@ class CacheClearCommand extends Command implements ContainerAwareInterface
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $reflectionClass = new ReflectionClass(Kernel::class);
-        /** @var AbstractAdapter $adapter */
-        $adapter = $reflectionClass->getProperty('kernelCache')->getValue($this->kernel());
-        $adapter->clear();
+        $reflectionKernel = new ReflectionClass($this->kernel());
+        $routerReflection = $reflectionKernel->getProperty('router');
+        /** @var Router $router */
+        $router = $routerReflection->getValue($this->kernel());
+        $names = [];
+        foreach ($router->routes as $route) {
+            $names[] = $route->path;
+        }
+        $output->writeln($names);
         return self::SUCCESS;
     }
 }
