@@ -46,6 +46,9 @@ class Route
         preg_match_all('/\{\w+\}/', $this->path, $pathParameters, PREG_SET_ORDER);
         $this->regexPath = '/^' . str_replace('/', '\\/', $this->regexPath) . '$/';
         if (empty($pathParameters)) {
+            if ($this->regexPath === '') {
+                $this->regexPath = '/';
+            }
             return;
         }
         $pathParameters = array_map(
@@ -77,9 +80,6 @@ class Route
         }
         if (!empty($pathParameters)) {
             throw new ProgrammerException('Missing value for :' . implode(', ', $pathParameters));
-        }
-        if ($this->regexPath === '') {
-            $this->regexPath = '/';
         }
     }
 
