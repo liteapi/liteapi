@@ -14,6 +14,7 @@ class RequestTest extends TestCase
     private function getRequiredServerParams(): array
     {
         return [
+            'REQUEST_METHOD' => 'GET',
             'REMOTE_ADDR' => '127.0.0.1',
             'REQUEST_URI' => '/'
         ];

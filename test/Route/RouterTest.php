@@ -41,7 +41,7 @@ class RouterTest extends TestCase
     {
         $router = new Router();
         $router->registerRoute(ControllerOne::class, 'index', '/index', []);
-        $request = new Request([], [], [], [], ['REQUESTED_METHOD' => 'GET', 'REQUEST_URI' => '/index', 'REMOTE_ADDR' => '127.0.0.1']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/index', 'REMOTE_ADDR' => '127.0.0.1']);
         $route = $router->getRoute($request);
         $this->assertTrue($route instanceof Route);
     }

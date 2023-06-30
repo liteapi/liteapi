@@ -52,7 +52,11 @@ class Request
         return new static($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
     }
 
-    public function getContent(bool $asResource = false): ?string
+    /**
+     * @param bool $asResource
+     * @return string|resource
+     */
+    public function getContent(bool $asResource = false)
     {
         if ($this->content !== null) {
             if ($asResource === true) {

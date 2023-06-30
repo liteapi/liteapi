@@ -15,7 +15,7 @@ class RequestHelper
      */
     public static function parseJson(Request $request, array $requiredParameters = []): array
     {
-        $content = json_decode($request->content, true);
+        $content = json_decode($request->getContent(), true);
         foreach ($requiredParameters as $requiredParameter) {
             if (!isset($content[$requiredParameter])) {
                 throw new HttpException(ResponseStatus::BadRequest, 'Missing required parameter ' . $requiredParameter);

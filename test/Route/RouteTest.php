@@ -72,7 +72,7 @@ class RouteTest extends TestCase
         $route = new Route(ControllerOne::class, 'echoInt', '/echo/{identifierInt}', ['GET']);
         $route->makeRegexPath();
         $container = new Container();
-        $request = new Request([], [], [], [], ['REQUESTED_METHOD' => 'GET', 'REQUEST_URI' => '/echo/12', 'REMOTE_ADDR' => '127.0.0.1']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/echo/12', 'REMOTE_ADDR' => '127.0.0.1']);
         $response = $route->execute($container, $request);
         $this->assertEquals('echo12', $response->content);
     }
@@ -85,7 +85,7 @@ class RouteTest extends TestCase
         $route = new Route(ControllerOne::class, 'echoTwoParams', '/echo/{channel}/list/{identifier}', ['POST', 'PUT']);
         $route->makeRegexPath();
         $container = new Container();
-        $request = new Request([], [], [], [], ['REQUESTED_METHOD' => 'GET', 'REQUEST_URI' => '/echo/volvo/list/15', 'REMOTE_ADDR' => '127.0.0.1']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/echo/volvo/list/15', 'REMOTE_ADDR' => '127.0.0.1']);
         $response = $route->execute($container, $request);
         $this->assertEquals('echo:volvo:15', $response->content);
     }
@@ -98,7 +98,7 @@ class RouteTest extends TestCase
         $route = new Route(ControllerOne::class, 'echoQuery', '/echo/{identifier}', ['GET']);
         $route->makeRegexPath();
         $container = new Container();
-        $request = new Request(['id' => 19], [], [], [], ['REQUESTED_METHOD' => 'GET', 'REQUEST_URI' => '/echo/abc', 'REMOTE_ADDR' => '127.0.0.1']);
+        $request = new Request(['id' => 19], server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/echo/abc', 'REMOTE_ADDR' => '127.0.0.1']);
         $response = $route->execute($container, $request);
         $this->assertEquals('requestId:19', $response->content);
     }
@@ -112,7 +112,7 @@ class RouteTest extends TestCase
         $route->makeRegexPath();
         $container = new Container();
         $container->add(['name' => Logger::class]);
-        $request = new Request([], [], [], [], ['REQUESTED_METHOD' => 'GET', 'REQUEST_URI' => '/index', 'REMOTE_ADDR' => '127.0.0.1']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/index', 'REMOTE_ADDR' => '127.0.0.1']);
         $response = $route->execute($container, $request);
         $this->assertEquals('tellOne', $response->content);
     }
