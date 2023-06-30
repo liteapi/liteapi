@@ -55,6 +55,14 @@ class Env
         throw new Exception("$name wasn't found in env variables");
     }
 
+    public static function isSet(string $name): bool
+    {
+        if (isset($_ENV[$name]) || isset($_SERVER[$name])) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Sets value only if overwrite is true or $name not exists in $_ENV or $_SERVER
      *
