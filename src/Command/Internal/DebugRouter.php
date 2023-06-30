@@ -26,15 +26,11 @@ class DebugRouter extends Command implements ContainerAwareInterface
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $reflectionKernel = new ReflectionClass($this->kernel());
-        $routerReflection = $reflectionKernel->getProperty('router');
-        /** @var Router $router */
-        $router = $routerReflection->getValue($this->kernel());
-        $names = [];
+        $router = $this->kernel()->getRouter();
+        $output->writeln('Path    Http methods');
         foreach ($router->routes as $route) {
-            $names[] = $route->path;
+            $output->writeln($route->path . '   ' . implode(', ', $route->httpMethods));
         }
-        $output->writeln($names);
         return self::SUCCESS;
     }
 }

@@ -183,4 +183,14 @@ class Kernel
     {
         return $this->container;
     }
+
+    public function getRouter(): Router
+    {
+        return $this->router;
+    }
+
+    public function getCommandLoader(): CommandsLoader
+    {
+        return $this->commandLoader;
+    }
 }
