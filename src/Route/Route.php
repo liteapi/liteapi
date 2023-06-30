@@ -9,6 +9,7 @@ use LiteApi\Container\Container;
 use LiteApi\Container\ContainerNotFoundException;
 use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
+use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
 use LiteApi\Route\Attribute\HasJsonContent;
@@ -100,24 +101,6 @@ class Route
             $reflectionMethod = $reflectionClass->getMethod($this->methodName);
             $args = $this->loadArguments($reflectionMethod->getParameters(), $container, $request); //, true
 
-            $hasQueryAttributes = $reflectionMethod->getAttributes(HasQuery::class);
-            if (!empty($hasQueryAttributes)) {
-                $queries = [];
-                foreach ($hasQueryAttributes as $hasQueryAttribute) {
-                    /** @var HasQuery $queryInstance */
-                    $queryInstance = $hasQueryAttribute->newInstance();
-                    $queries[$queryInstance->key] = $queryInstance->type;
-                }
-                $request->parseQueryByDefinition($queries);
-            }
-
-            $hasJsonContentAttributes = $reflectionMethod->getAttributes(HasJsonContent::class);
-            if (!empty($hasJsonContentAttributes)) {
-                /** @var HasJsonContent $jsonInstance */
-                $jsonInstance = $hasJsonContentAttributes[0]->newInstance();
-                $request->parseJsonContent($jsonInstance->requiredParams);
-            }
-
             if (is_subclass_of($class, ContainerAwareInterface::class)) {
                 $class->setContainer($container);
             }
@@ -125,7 +108,26 @@ class Route
             throw new ProgrammerException('Error while loading route, see previous exception', previous: $e);
         }
 
+        $hasQueryAttributes = $reflectionMethod->getAttributes(HasQuery::class);
+        if (!empty($hasQueryAttributes)) {
+            $queries = [];
+            foreach ($hasQueryAttributes as $hasQueryAttribute) {
+                /** @var HasQuery $queryInstance */
+                $queryInstance = $hasQueryAttribute->newInstance();
+                $queries[$queryInstance->key] = $queryInstance->type;
+            }
+            $request->parseQueryByDefinition($queries);
+        }
+
+        $hasJsonContentAttributes = $reflectionMethod->getAttributes(HasJsonContent::class);
+        if (!empty($hasJsonContentAttributes)) {
+            /** @var HasJsonContent $jsonInstance */
+            $jsonInstance = $hasJsonContentAttributes[0]->newInstance();
+            $request->parseJsonContent($jsonInstance->requiredParams);
+        }
+
         $result = $reflectionMethod->invokeArgs($class, $args);
+
         if ($result instanceof Response) {
             return $result;
         } elseif (is_array($result)) {
