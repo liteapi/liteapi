@@ -45,7 +45,7 @@ class Request
 
         $this->ip = $this->server->get('REMOTE_ADDR');
         $this->path = $this->server->get('REQUEST_URI');
-        $this->method = $this->server->get('REQUEST_METHOD', 'GET');
+        $this->method = $this->server->get('REQUEST_METHOD');
     }
 
     public static function makeFromGlobals(): static
