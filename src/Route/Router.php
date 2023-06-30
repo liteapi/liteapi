@@ -58,8 +58,9 @@ class Router
                     $methodNotAllowed = true;
                 } else {
                     $matchedRoute = $route;
+                    break;
                 }
-                break;
+                //break;
             }
         }
         if (!isset($matchedRoute)) {
