@@ -26,7 +26,7 @@ class ClassWalker
         $services = [];
         $commands = [];
         $routes = [];
-        $onError = [];
+        $onErrors = [];
         if (is_file($servicePath) || !is_dir($servicePath)) {
             throw new ProgrammerException('Cannot load path that is not directory');
         }
@@ -36,29 +36,31 @@ class ClassWalker
             $services[$className] = new ClassDefinition($className, []);
             /* Add routes or command if exists */
             $reflectionClass = new ReflectionClass($className);
-            $commandAttribute = $reflectionClass->getAttributes(AsCommand::class);
-            if (!empty($commandAttribute)) {
-                $commands[$commandAttribute[0]->getArguments()[0]] = $className;
+            $commandAttributes = $reflectionClass->getAttributes(AsCommand::class);
+            if (!empty($commandAttributes)) {
+                /** @var AsCommand $command */
+                $command = $commandAttributes[0]->newInstance();
+                $commands[$command->name] = $className;
             }
             foreach ($reflectionClass->getMethods() as $method) {
                 $attributes = $method->getAttributes(AsRoute::class);
                 if (!empty($attributes)) {
-                    $attribute = $attributes[0];
-                    $arguments = $attribute->getArguments();
+                    /** @var AsRoute $asRoute */
+                    $asRoute = $attributes[0]->newInstance();
                     $routes[] = new Route($className,
                         $method->getName(),
-                        $arguments[0],
-                        $arguments[1] ?? []
+                        $asRoute->path,
+                        $asRoute->methods
                     );
                 }
                 $attributes = $method->getAttributes(OnError::class);
-                if (!empty($attributes)) {
-                    $attribute = $attributes[0];
-                    $arguments = $attribute->getArguments();
-                    $onError[$arguments[0]->value] = $className . '::' . $method->getName();
+                foreach ($attributes as $attribute) {
+                    /** @var OnError $onError */
+                    $onError = $attribute->newInstance();
+                    $onErrors[$onError->status->value] = $className . '::' . $method->getName();
                 }
             }
         }
-        return new DefinitionsTransfer($services, $commands, $routes, $onError);
+        return new DefinitionsTransfer($services, $commands, $routes, $onErrors);
     }
 }
