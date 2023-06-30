@@ -55,9 +55,24 @@ class RouterTest extends TestCase
         $router = new Router();
         $router->registerRoute(ControllerOne::class, 'index', '/index', []);
         $router->registerRoute(ControllerOne::class, 'index2', '/', []);
-        $request = new Request([], [], [], [], ['REQUESTED_METHOD' => 'GET', 'REQUEST_URI' => '/', 'REMOTE_ADDR' => '127.0.0.1']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/', 'REMOTE_ADDR' => '127.0.0.1']);
         $route = $router->getRoute($request);
         $this->assertTrue($route instanceof Route);
         $this->assertEquals('/', $route->path);
+    }
+
+    /**
+     * @covers \LiteApi\Route\Router::getRoute
+     * @covers \LiteApi\Route\Router::registerRoute
+     */
+    public function testGetRouteDifferentMethods(): void
+    {
+        $router = new Router();
+        $router->registerRoute(ControllerOne::class, 'index', '/index', ['GET']);
+        $router->registerRoute(ControllerOne::class, 'indexPost', '/index', ['POST']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/index', 'REMOTE_ADDR' => '127.0.0.1']);
+        $route = $router->getRoute($request);
+        $this->assertTrue($route instanceof Route);
+        $this->assertEquals(['POST'], $route->httpMethods);
     }
 }
