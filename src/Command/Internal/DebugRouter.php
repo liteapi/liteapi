@@ -8,8 +8,6 @@ use LiteApi\Command\Output\OutputInterface;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
 use LiteApi\Kernel;
-use LiteApi\Route\Router;
-use ReflectionClass;
 
 class DebugRouter extends Command implements ContainerAwareInterface
 {

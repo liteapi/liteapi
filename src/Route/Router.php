@@ -60,7 +60,6 @@ class Router
                     $matchedRoute = $route;
                     break;
                 }
-                //break;
             }
         }
         if (!isset($matchedRoute)) {

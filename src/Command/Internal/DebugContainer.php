@@ -7,9 +7,7 @@ use LiteApi\Command\Input\InputInterface;
 use LiteApi\Command\Output\OutputInterface;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
-use LiteApi\Container\Container;
 use LiteApi\Kernel;
-use ReflectionClass;
 
 class DebugContainer extends Command implements ContainerAwareInterface
 {
@@ -21,15 +19,9 @@ class DebugContainer extends Command implements ContainerAwareInterface
         return $this->container->get(Kernel::class);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $reflectionKernel = new ReflectionClass($this->kernel());
-        $containerLoaderReflection = $reflectionKernel->getProperty('container');
-        /** @var Container $container */
-        $container = $containerLoaderReflection->getValue($this->kernel());
+        $container = $this->kernel()->getContainer();
         $output->writeln(array_keys($container->definitions));
         return self::SUCCESS;
     }
