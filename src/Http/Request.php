@@ -6,7 +6,6 @@ use BackedEnum;
 use LiteApi\Exception\ProgrammerException;
 use LiteApi\Http\Exception\HttpException;
 use LiteApi\Route\QueryType;
-use Psr\Log\LoggerInterface;
 
 /**
  * @phpstan-consistent-constructor
@@ -22,7 +21,7 @@ class Request
     public ValuesBag $server;
     public ValuesBag $files;
     public ValuesBag $cookies;
-    public ?string $content;
+    private ?string $content;
     public array $parsedContent = [];
 
     public function __construct(
@@ -51,6 +50,25 @@ class Request
     public static function makeFromGlobals(): static
     {
         return new static($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
+    }
+
+    public function getContent(bool $asResource = false): ?string
+    {
+        if ($this->content !== null) {
+            if ($asResource === true) {
+                $resource = fopen('php://temp', 'r+');
+                fwrite($resource, $this->content);
+                rewind($resource);
+                return $resource;
+            } else {
+                return $this->content;
+            }
+        }
+        if ($asResource === true) {
+            return fopen('php://input', 'r');
+        }
+        $this->content = file_get_contents('php://input');
+        return $this->content;
     }
 
     public function getRequestLogMessage(): string
@@ -98,10 +116,11 @@ class Request
      */
     public function parseJsonContent(array $requiredParams): void
     {
-        if (!is_string($this->content)) {
-            throw new HttpException(ResponseStatus::BadRequest, 'Content is not a valid string');
+        $content = $this->getContent();
+        if (!is_string($content)) {
+            throw new HttpException(ResponseStatus::BadRequest, 'Content is not a valid string json');
         }
-        $this->parsedContent = json_decode($this->content, true);
+        $this->parsedContent = json_decode($content, true);
         if ($this->parsedContent === false) {
             throw new HttpException(ResponseStatus::BadRequest, 'Content is not valid json');
         }
