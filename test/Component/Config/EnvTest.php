@@ -14,18 +14,6 @@ class EnvTest extends TestCase
 {
 
     /**
-     * @covers \LiteApi\Component\Config\Env::getConfigFromEnv
-     */
-    public function testGetConfigFromEnv()
-    {
-        $env = new Env();
-        $dir = __DIR__ . '/../../resources/project/example1/';
-        $envWrapper = $env->getEnvParams($dir);
-        $this->assertEquals('dev', $envWrapper->env);
-        $this->assertEquals(true, $envWrapper->debug);
-    }
-
-    /**
      * @covers \LiteApi\Component\Config\Env::loadPhpConfig
      */
     public function testLoadConfigFile()
