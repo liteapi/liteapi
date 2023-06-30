@@ -27,16 +27,18 @@ enum QueryType
             case self::String:
                 break;
             case self::Int:
-                if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
-                    throw new HttpException(ResponseStatus::BadRequest, $value . 'must be valid integer');
+                $newValue = filter_var($value, FILTER_VALIDATE_INT);
+                if ($newValue === false) {
+                    throw new HttpException(ResponseStatus::BadRequest, $value . ' must be valid integer');
                 }
-                $value = (int) $value;
+                $value = $newValue;
                 break;
             case self::Float:
-                if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
-                    throw new HttpException(ResponseStatus::BadRequest, $value . 'must be valid float');
+                $newValue = filter_var($value, FILTER_VALIDATE_FLOAT);
+                if ($newValue === false) {
+                    throw new HttpException(ResponseStatus::BadRequest, $value . ' must be valid float');
                 }
-                $value = (float) $value;
+                $value = $newValue;
                 break;
             case self::DateTime:
                 $originalValue = $value;

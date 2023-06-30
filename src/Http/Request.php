@@ -59,7 +59,7 @@ class Request
     }
 
     /**
-     * @param array $queryDefinitions
+     * @param array<string,string|QueryType> $queryDefinitions
      * @return void
      * @throws HttpException
      * @throws ProgrammerException
@@ -105,10 +105,10 @@ class Request
         if ($this->parsedContent === false) {
             throw new HttpException(ResponseStatus::BadRequest, 'Content is not valid json');
         }
-        foreach ($requiredParams as $requiredParam) {
-            if (!isset($this->parsedContent[$requiredParam])) {
-                throw new HttpException(ResponseStatus::BadRequest, 'Missing required param ' . $requiredParam);
-            }
+        $keyDiff = array_diff($requiredParams, array_keys($this->parsedContent));
+        if (!empty($keyDiff)) {
+            throw new HttpException(ResponseStatus::BadRequest,
+                'Missing required params: ' . implode(', ', $keyDiff));
         }
     }
 

@@ -46,9 +46,6 @@ class Route
         preg_match_all('/\{\w+\}/', $this->path, $pathParameters, PREG_SET_ORDER);
         $this->regexPath = '/^' . str_replace('/', '\\/', $this->regexPath) . '$/';
         if (empty($pathParameters)) {
-            if ($this->regexPath === '') {
-                $this->regexPath = '/';
-            }
             return;
         }
         $pathParameters = array_map(
@@ -105,12 +102,20 @@ class Route
 
             $hasQueryAttributes = $reflectionMethod->getAttributes(HasQuery::class);
             if (!empty($hasQueryAttributes)) {
-                $request->parseQueryByDefinition($hasQueryAttributes[0]->getArguments()[0]);
+                $queries = [];
+                foreach ($hasQueryAttributes as $hasQueryAttribute) {
+                    /** @var HasQuery $queryInstance */
+                    $queryInstance = $hasQueryAttribute->newInstance();
+                    $queries[$queryInstance->key] = $queryInstance->type;
+                }
+                $request->parseQueryByDefinition($queries);
             }
 
             $hasJsonContentAttributes = $reflectionMethod->getAttributes(HasJsonContent::class);
             if (!empty($hasJsonContentAttributes)) {
-                $request->parseJsonContent($hasJsonContentAttributes[0]->getArguments()[0]);
+                /** @var HasJsonContent $jsonInstance */
+                $jsonInstance = $hasJsonContentAttributes[0]->newInstance();
+                $request->parseJsonContent($jsonInstance->requiredParams);
             }
 
             if (is_subclass_of($class, ContainerAwareInterface::class)) {
