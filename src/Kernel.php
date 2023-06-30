@@ -132,8 +132,10 @@ class Kernel
             try {
                 $this->eventHandler->trigger(KernelEvent::RequestException, $e);
             } catch (Exception $eventException) {
+                $this->kernelLogger?->error($e->getMessage(), ['exception' => $e]);
                 return $this->router->getErrorResponse($eventException);
             }
+            $this->kernelLogger?->error($e->getMessage(), ['exception' => $e]);
             return $this->router->getErrorResponse($e);
         }
         $this->eventHandler->trigger(KernelEvent::AfterRequest, $response);
