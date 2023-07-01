@@ -128,25 +128,17 @@ class Request
     }
 
     /**
-     * @param string[] $requiredParams
+     * @param string[] $requiredKeys
      * @return void
      * @throws HttpException
      */
-    public function parseJsonContent(array $requiredParams): void
+    public function parseJsonContent(array $requiredKeys): void
     {
         $content = $this->getContent();
         if (!is_string($content)) {
             throw new HttpException(ResponseStatus::BadRequest, 'Content is not a valid string json');
         }
-        $this->parsedContent = json_decode($content, true);
-        if ($this->parsedContent === false) {
-            throw new HttpException(ResponseStatus::BadRequest, 'Content is not valid json');
-        }
-        $keyDiff = array_diff($requiredParams, array_keys($this->parsedContent));
-        if (!empty($keyDiff)) {
-            throw new HttpException(ResponseStatus::BadRequest,
-                'Missing required params: ' . implode(', ', $keyDiff));
-        }
+        $this->parsedContent = RequestHelper::parseJson($content, $requiredKeys);
     }
 
 }

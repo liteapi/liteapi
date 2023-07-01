@@ -8,12 +8,12 @@ use LiteApi\Kernel;
 class HttpRunner implements RunnerInterface
 {
 
-    public Kernel $kernel;
-    public Request $request;
+    private Request $request;
 
-    public function __construct(Kernel $kernel)
+    public function __construct(
+        private readonly Kernel $kernel
+    )
     {
-        $this->kernel = $kernel;
         $this->request = Request::makeFromGlobals();
     }
 

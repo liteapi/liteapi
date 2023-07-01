@@ -9,7 +9,6 @@ use LiteApi\Container\Container;
 use LiteApi\Container\ContainerNotFoundException;
 use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
-use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
 use LiteApi\Route\Attribute\HasJsonContent;
@@ -22,18 +21,15 @@ use ReflectionNamedType;
 class Route
 {
 
-    private string $className;
-    private string $methodName;
-    public string $path;
-    public array $httpMethods;
     public ?string $regexPath = null;
 
-    public function __construct(string $className, string $methodName, string $path, array $httpMethods)
+    public function __construct(
+        private string $className,
+        private string $methodName,
+        public string $path,
+        public array $httpMethods
+    )
     {
-        $this->className = $className;
-        $this->methodName = $methodName;
-        $this->path = $path;
-        $this->httpMethods = $httpMethods;
     }
 
     /**

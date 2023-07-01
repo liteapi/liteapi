@@ -10,10 +10,7 @@ use Psr\Cache\CacheItemPoolInterface;
 class DefinitionLoader
 {
 
-    public function loadFromComposer(
-        string $projectDir,
-        CacheItemPoolInterface $cache
-    ): DefinitionsTransfer
+    public function loadFromComposer(string $projectDir, CacheItemPoolInterface $cache): DefinitionsTransfer
     {
         $composerLockPath = $projectDir . DIRECTORY_SEPARATOR . 'composer.lock';
         $serviceComposerTimeCache = $cache->getItem('kernel.definitions.composer.time');

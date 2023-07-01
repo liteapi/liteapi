@@ -7,13 +7,11 @@ use LiteApi\Kernel;
 class CliRunner implements RunnerInterface
 {
 
-    private Kernel $kernel;
-    public ?string $commandName;
 
-    public function __construct(Kernel $kernel, ?string $commandName = null)
+    public function __construct(
+        private readonly Kernel  $kernel,
+        private readonly ?string $commandName = null)
     {
-        $this->kernel = $kernel;
-        $this->commandName = $commandName;
     }
 
     /**

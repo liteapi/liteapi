@@ -10,16 +10,11 @@ class ExtensionLoader
 {
 
     /**
-     * @var array<string|int,array>
-     */
-    private array $extensionConfigs;
-
-    /**
      * @param array<string|int, array> $extensionConfigs
      */
-    public function __construct(array $extensionConfigs)
+    public function __construct(
+        public array $extensionConfigs)
     {
-        $this->extensionConfigs = $extensionConfigs;
     }
 
     public function loadExtensions(
