@@ -52,7 +52,7 @@ class Response
             return;
         }
 
-        foreach ($this->headers->parameters as $key => $value) {
+        foreach ($this->headers->getAllToSend() as $key => $value) {
             header($key . ': ' . $value, true, $this->status->value);
         }
 

@@ -12,15 +12,28 @@ use LiteApi\Route\QueryType;
  */
 class Request
 {
+
+    public const METHOD_HEAD = 'HEAD';
+    public const METHOD_GET = 'GET';
+    public const METHOD_POST = 'POST';
+    public const METHOD_PUT = 'PUT';
+    public const METHOD_PATCH = 'PATCH';
+    public const METHOD_DELETE = 'DELETE';
+    public const METHOD_PURGE = 'PURGE';
+    public const METHOD_OPTIONS = 'OPTIONS';
+    public const METHOD_TRACE = 'TRACE';
+    public const METHOD_CONNECT = 'CONNECT';
+
     public string $ip;
     public string $path;
     public string $method;
     public ValuesBag $query;
     public ValuesBag $request;
     public ValuesBag $attributes;
-    public ValuesBag $server;
+    public ServerBag $server;
     public ValuesBag $files;
     public ValuesBag $cookies;
+    public HeadersBag $headers;
     private ?string $content;
     public array $parsedContent = [];
 
@@ -37,14 +50,15 @@ class Request
         $this->query = new ValuesBag($query);
         $this->request = new ValuesBag($request);
         $this->attributes = new ValuesBag($attributes);
-        $this->server = new ValuesBag($server);
+        $this->server = new ServerBag($server);
         $this->files = new ValuesBag($files);
         $this->cookies = new ValuesBag($cookies);
         $this->content = $content;
-
+        
         $this->ip = $this->server->get('REMOTE_ADDR');
         $this->path = $this->server->get('REQUEST_URI');
         $this->method = $this->server->get('REQUEST_METHOD');
+        $this->headers = $this->server->getHeaders();
     }
 
     public static function makeFromGlobals(): static
@@ -88,7 +102,7 @@ class Request
      */
     public function parseQueryByDefinition(array $queryDefinitions): void
     {
-        $queryParams = $this->query->parameters;
+        $queryParams = $this->query->values;
         foreach ($queryDefinitions as $key => $definition) {
             if (!isset($queryParams[$key])) {
                 continue;

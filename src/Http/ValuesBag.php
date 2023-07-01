@@ -8,11 +8,11 @@ class ValuesBag
     /**
      * @var array<string, mixed>
      */
-    public array $parameters;
+    public array $values;
 
-    public function __construct(array $parameters)
+    public function __construct(array $values)
     {
-        $this->parameters = $parameters;
+        $this->values = $values;
     }
 
     /**
@@ -22,6 +22,6 @@ class ValuesBag
      */
     public function get(string $key, mixed $default = null): string|int|null
     {
-        return $this->parameters[$key] ?? $default;
+        return $this->values[$key] ?? $default;
     }
 }
