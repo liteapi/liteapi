@@ -8,7 +8,7 @@ use LiteApi\Route\QueryType;
 /**
  * Query key that IF EXISTS in request will be parsed as given definition says
  */
-#[Attribute(Attribute::TARGET_METHOD| Attribute::TARGET_FUNCTION)]
+#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_FUNCTION)]
 class HasQuery
 {
 

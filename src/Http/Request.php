@@ -86,6 +86,9 @@ class Request
             return fopen('php://input', 'r');
         }
         $this->content = file_get_contents('php://input');
+        if ($this->content === false) {
+            throw new HttpException(ResponseStatus::BadRequest, 'Cannot read request content');
+        }
         return $this->content;
     }
 
@@ -134,11 +137,7 @@ class Request
      */
     public function parseJsonContent(array $requiredKeys): void
     {
-        $content = $this->getContent();
-        if (!is_string($content)) {
-            throw new HttpException(ResponseStatus::BadRequest, 'Content is not a valid string json');
-        }
-        $this->parsedContent = RequestHelper::parseJson($content, $requiredKeys);
+        $this->parsedContent = RequestHelper::parseJson($this->getContent(), $requiredKeys);
     }
 
 }

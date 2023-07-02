@@ -80,7 +80,7 @@ class CommandsLoader
             $stdin->load();
             /* Inject services */
             if (is_subclass_of($command, ContainerAwareInterface::class)) {
-                $command->setContainer($container);
+                $command->/** @scrutinizer ignore-call */setContainer($container);
             }
             return $command->execute($stdin, $stdout);
         } catch (Exception $e) {

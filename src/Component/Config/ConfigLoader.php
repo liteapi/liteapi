@@ -26,7 +26,7 @@ class ConfigLoader
         $serializedConfigPath = $this->projectDir . self::CACHE_SERIALIZED_PATH; //TODO: different path?
         if (file_exists($serializedConfigPath)) {
             $lastModified = filemtime($serializedConfigPath);
-            if ($lastModified !== false && $lastModified + 360 > time()) {
+            if ($lastModified !== false && $lastModified+360 > time()) {
                 return unserialize(file_get_contents($serializedConfigPath));
             }
         }
@@ -60,7 +60,7 @@ class ConfigLoader
     {
         $result = array_walk_recursive(
             $config,
-            function (&$item): void {
+            function(&$item): void {
                 if (is_string($item)) {
                     if (str_contains($item, '%env')) {
                         $pregResult = preg_match('/%(?<env>env)\(((?<type>\w+):)?(?<name>\w+)\)%/', $item, $matches);
@@ -98,7 +98,7 @@ class ConfigLoader
         }
         if (isset($this->envWrapper->params[$name])) {
             $value = $this->envWrapper->params[$name];
-            return $type !==  null ? $type->convertValue($value) : $value;
+            return $type !== null ? $type->convertValue($value) : $value;
         }
         return Env::getValue($name, $type);
     }
