@@ -3,12 +3,14 @@
 namespace LiteApi\Command;
 
 use Exception;
+use LiteApi\Command\Input\InputInterface;
 use LiteApi\Command\Input\Stdin;
 use LiteApi\Command\Internal\CacheClear;
 use LiteApi\Command\Internal\CacheWarmup;
 use LiteApi\Command\Internal\DebugCommand;
 use LiteApi\Command\Internal\DebugContainer;
 use LiteApi\Command\Internal\DebugRouter;
+use LiteApi\Command\Output\OutputInterface;
 use LiteApi\Command\Output\Stdout;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Container;
@@ -43,14 +45,16 @@ class CommandsLoader
         $this->command[$commandName] = $className;
     }
 
-    /**
-     * @param string $commandName
-     * @param Container $container
-     * @return int
-     */
-    public function runCommandFromName(string $commandName, Container $container): int
+    public function runCommandFromName(
+        string $commandName,
+        Container $container,
+        ?InputInterface $input = null,
+        ?OutputInterface $output = null
+    ): int
     {
-        $stdout = new Stdout();
+        if ($output === null){
+            $output = new Stdout();
+        }
         try {
             $className = $this->command[$commandName];
             $reflectionClass = new ReflectionClass($className);
@@ -72,19 +76,21 @@ class CommandsLoader
             } else {
                 $args = [];
             }
-            $stdin = new Stdin();
+            if ($input === null) {
+                $input = new Stdin();
+            }
             /** @var Command $command */
             $command = $reflectionClass->newInstanceArgs($args);
-            $command->prepare($stdin);
+            $command->prepare($input);
             /* Prepare input */
-            $stdin->load();
+            $input->load();
             /* Inject services */
             if (is_subclass_of($command, ContainerAwareInterface::class)) {
                 $command->/** @scrutinizer ignore-call */setContainer($container);
             }
-            return $command->execute($stdin, $stdout);
+            return $command->execute($input, $output);
         } catch (Exception $e) {
-            $stdout->writeln([
+            $output->writeln([
                 'Exception thrown during command',
                 $e->getMessage(),
                 'file: ' . $e->getFile(),

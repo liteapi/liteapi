@@ -53,7 +53,7 @@ class Handler
         $kernelEventClass = $reflectionClass->newInstanceWithoutConstructor();
         foreach ($definitions as $methodName) {
             $reflectionMethod = $reflectionClass->getMethod($methodName);
-            $reflectionMethod->invoke($kernelEventClass, $args);
+            $reflectionMethod->invokeArgs($kernelEventClass, $args);
         }
     }
 
