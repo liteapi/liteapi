@@ -18,6 +18,9 @@ class FilesManagerTest extends TestCase
         $classes = $filesManager->getClassesNamesFromPath($testDir, 'LiteApi\\Test\\Command');
         $this->assertIsArray($classes);
         $this->assertCount(2, $classes);
-        $this->assertEquals(['LiteApi\\Test\\Command\\CommandsLoaderTest', 'LiteApi\\Test\\Command\\Input\\StdinTest'], $classes);
+        sort($classes);
+        $expectedClasses = ['LiteApi\\Test\\Command\\CommandsLoaderTest', 'LiteApi\\Test\\Command\\Input\\StdinTest'];
+        sort($expectedClasses);
+        $this->assertEquals($expectedClasses, $classes);
     }
 }
