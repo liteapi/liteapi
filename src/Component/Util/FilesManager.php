@@ -35,7 +35,7 @@ class FilesManager
         $phpFiles = new RegexIterator($allFiles, '/\.php$/');
         $classes = [];
         foreach ($phpFiles as $phpFile) {
-            $classes[] = substr(str_replace($path, $baseNamespace, str_replace('/', '\\', $phpFile->getRealpath())), 0, -4);
+            $classes[] = substr(str_replace('/', '\\', str_replace($path, $baseNamespace,  $phpFile->getRealpath())), 0, -4);
         }
         return $classes;
     }
