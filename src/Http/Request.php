@@ -75,6 +75,10 @@ class Request
         if ($this->content !== null) {
             if ($asResource === true) {
                 $resource = fopen('php://temp', 'r+');
+                if ($resource === false) {
+                    throw new HttpException(ResponseStatus::BadRequest,
+                        'Cannot open php:://temp resource to write content');
+                }
                 fwrite($resource, $this->content);
                 rewind($resource);
                 return $resource;
@@ -83,18 +87,25 @@ class Request
             }
         }
         if ($asResource === true) {
-            return fopen('php://input', 'r');
+            $resource = fopen('php://input', 'r');
+            if ($resource === false) {
+                throw new HttpException(ResponseStatus::BadRequest,
+                    'Cannot read request content');
+            }
+            return $resource;
         }
-        $this->content = file_get_contents('php://input');
-        if ($this->content === false) {
-            throw new HttpException(ResponseStatus::BadRequest, 'Cannot read request content');
+        $content = file_get_contents('php://input');
+        if ($content === false) {
+            throw new HttpException(ResponseStatus::BadRequest,
+                'Cannot read request content');
         }
+        $this->content = $content;
         return $this->content;
     }
 
     public function getRequestLogMessage(): string
     {
-        return sprintf('Requested path: %s, with %s method from ip: %s', $this->path, $this->method, $this->ip);
+        return sprintf('Requested path: %s, with method %s from ip: %s', $this->path, $this->method, $this->ip);
     }
 
     /**
