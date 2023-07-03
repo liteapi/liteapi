@@ -1,7 +1,7 @@
 {
     "name": "liteapi/liteapi",
     "type": "framework",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "description": "LiteApi is very fast framework that doesn't affect your architecture",
     "authors": [
         {
