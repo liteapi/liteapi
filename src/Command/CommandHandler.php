@@ -18,7 +18,7 @@ use LiteApi\Container\Definition\ClassDefinition;
 use ReflectionClass;
 use ReflectionNamedType;
 
-class CommandsLoader
+class CommandHandler
 {
 
     private const KERNEL_COMMANDS = [

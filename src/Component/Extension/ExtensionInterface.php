@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Extension;
 
-use LiteApi\Command\CommandsLoader;
+use LiteApi\Command\CommandHandler;
 use LiteApi\Container\Container;
 use LiteApi\Route\Router;
 
@@ -17,6 +17,6 @@ interface ExtensionInterface
 
     public function registerRoutes(Router $router): void;
 
-    public function registerCommands(CommandsLoader $commandLoader): void;
+    public function registerCommands(CommandHandler $commandLoader): void;
 
 }

@@ -4,7 +4,7 @@ namespace LiteApi;
 
 use Exception;
 use LiteApi\Command\Command;
-use LiteApi\Command\CommandsLoader;
+use LiteApi\Command\CommandHandler;
 use LiteApi\Component\Config\Wrapper\ConfigWrapper;
 use LiteApi\Component\Extension\ExtensionLoader;
 use LiteApi\Component\Loader\ClassWalker;
@@ -38,7 +38,7 @@ class Kernel
     public string $env;
     public bool $debug;
     public Router $router;
-    public CommandsLoader $commandLoader;
+    public CommandHandler $commandHandler;
     public Container $container;
     protected Handler $eventHandler;
     protected CacheItemPoolInterface $kernelCache;
@@ -75,7 +75,7 @@ class Kernel
         }
         $this->container = new Container();
         $this->router = new Router($config->trustedIps);
-        $this->commandLoader = new CommandsLoader();
+        $this->commandHandler = new CommandHandler();
 
         $classWalker = new ClassWalker();
         foreach ($config->servicesDir as $serviceDir) {
@@ -87,7 +87,7 @@ class Kernel
         $extensionLoader->loadExtensions(
             $this->container,
             $this->router,
-            $this->commandLoader
+            $this->commandHandler
         );
         $this->container->createDefinitionsFromConfig($config->container);
 
@@ -97,7 +97,7 @@ class Kernel
     private function loadFromDefinitions(DefinitionsTransfer $definitions): void
     {
         $this->container->load($definitions->services);
-        $this->commandLoader->load($definitions->commands);
+        $this->commandHandler->load($definitions->commands);
         $this->router->load($definitions->routes);
         $this->router->loadOnError($definitions->onErrors);
     }
@@ -142,11 +142,11 @@ class Kernel
     public function handleCommand(?string $commandName = null): int
     {
         if ($commandName === null) {
-            $commandName = $this->commandLoader->getCommandNameFromServer();
+            $commandName = $this->commandHandler->getCommandNameFromServer();
         }
         $this->eventHandler->trigger(KernelEvent::BeforeCommand, $commandName);
         try {
-            $code = $this->commandLoader->runCommandFromName($commandName, $this->container);
+            $code = $this->commandHandler->runCommandFromName($commandName, $this->container);
         } catch (Exception $e) {
             $this->kernelLogger?->error($e->getMessage(), ['exception' => $e]);
             $code = Command::FAILURE;
@@ -191,8 +191,8 @@ class Kernel
         return $this->router;
     }
 
-    public function getCommandLoader(): CommandsLoader
+    public function getCommandHandler(): CommandHandler
     {
-        return $this->commandLoader;
+        return $this->commandHandler;
     }
 }

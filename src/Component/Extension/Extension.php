@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Extension;
 
-use LiteApi\Command\CommandsLoader;
+use LiteApi\Command\CommandHandler;
 use LiteApi\Component\Common\ArrayAssertionTrait;
 use LiteApi\Container\Container;
 use LiteApi\Route\Router;
@@ -34,7 +34,7 @@ class Extension implements ExtensionInterface
 
     }
 
-    public function registerCommands(CommandsLoader $commandLoader): void
+    public function registerCommands(CommandHandler $commandLoader): void
     {
 
     }

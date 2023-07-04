@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Extension;
 
-use LiteApi\Command\CommandsLoader;
+use LiteApi\Command\CommandHandler;
 use LiteApi\Container\Container;
 use LiteApi\Route\Router;
 
@@ -20,7 +20,7 @@ class ExtensionLoader
     public function loadExtensions(
         Container      $container,
         Router         $router,
-        CommandsLoader $commandLoader
+        CommandHandler $commandLoader
     ): void
     {
         foreach ($this->extensionConfigs as $extensionName => $extensionConfig) {

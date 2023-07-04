@@ -24,7 +24,7 @@ class DebugCommand extends Command implements ContainerAwareInterface
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $commandLoader = $this->kernel()->getCommandLoader();
+        $commandLoader = $this->kernel()->getCommandHandler();
         $output->writeln('Command    :   Class');
         foreach ($commandLoader->command as $command => $class) {
             $output->writeln($command . '     ' . $class);
