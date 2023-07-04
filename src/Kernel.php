@@ -3,6 +3,7 @@
 namespace LiteApi;
 
 use Exception;
+use LiteApi\Command\Command;
 use LiteApi\Command\CommandsLoader;
 use LiteApi\Component\Config\Wrapper\ConfigWrapper;
 use LiteApi\Component\Extension\ExtensionLoader;
@@ -23,8 +24,8 @@ class Kernel
     public const VERSION = 000600;
     public const VERSION_DOTTED = '0.6.0';
     /* only for stable version
-    public const VERSION_END_OF_LIFE = '06/2024';
-    public const VERSION_END_OF_MAINTENANCE = '03/2024';
+    public const VERSION_END_OF_LIFE = '09/2023';
+    public const VERSION_END_OF_MAINTENANCE = '09/2023';
     */
 
     private const PROPERTIES_TO_CACHE = [
@@ -129,14 +130,10 @@ class Kernel
             $this->container->add(['name' => Request::class, 'args' => [], 'object' => $request]);
             $response = $route->execute($this->container, $request);
         } catch (Exception $e) {
-            try {
-                $this->eventHandler->trigger(KernelEvent::RequestException, $e);
-            } catch (Exception $eventException) {
-                $this->kernelLogger?->error($e->getMessage(), ['exception' => $e]);
-                return $this->router->getErrorResponse($eventException);
-            }
             $this->kernelLogger?->error($e->getMessage(), ['exception' => $e]);
-            return $this->router->getErrorResponse($e);
+            $response = $this->router->getErrorResponse($e);
+            $this->eventHandler->trigger(KernelEvent::RequestException, $e, $response);
+            return $response;
         }
         $this->eventHandler->trigger(KernelEvent::AfterRequest, $response);
         return $response;
@@ -148,7 +145,12 @@ class Kernel
             $commandName = $this->commandLoader->getCommandNameFromServer();
         }
         $this->eventHandler->trigger(KernelEvent::BeforeCommand, $commandName);
-        $code = $this->commandLoader->runCommandFromName($commandName, $this->container);
+        try {
+            $code = $this->commandLoader->runCommandFromName($commandName, $this->container);
+        } catch (Exception $e) {
+            $this->kernelLogger?->error($e->getMessage(), ['exception' => $e]);
+            $code = Command::FAILURE;
+        }
         $this->eventHandler->trigger(KernelEvent::AfterCommand, $code);
         return $code;
     }

@@ -96,7 +96,7 @@ class CommandsLoader
                 'file: ' . $e->getFile(),
                 'line: ' . $e->getLine()
             ]);
-            return Command::FAILURE;
+            throw $e;
         }
     }
 
