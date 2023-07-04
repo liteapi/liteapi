@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Config\Wrapper;
 
-use LiteApi\Component\Util\ArrayWrapper;
+use LiteApi\Component\Common\ArrayWrapper;
 
 class Setter extends ArrayWrapper
 {
@@ -15,6 +15,7 @@ class Setter extends ArrayWrapper
         $methodName = 'method';
         $argsName = 'args';
         $this->assertHasKeys($config, [$methodName, $argsName]);
+        $this->assertHasOnlyPermittedKeys($config, [$methodName, $argsName]);
 
         $method = $config[$methodName];
         $this->assertIsString($method);

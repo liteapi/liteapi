@@ -9,7 +9,7 @@ use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
 use LiteApi\Kernel;
 
-class DebugCommand extends Command implements ContainerAwareInterface
+class DebugRouter extends Command implements ContainerAwareInterface
 {
 
     use ContainerAwareTrait;
@@ -24,10 +24,10 @@ class DebugCommand extends Command implements ContainerAwareInterface
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $commandHandler = $this->kernel()->getCommandHandler();
-        $output->writeln('Command    :   Class');
-        foreach ($commandHandler->command as $command => $class) {
-            $output->writeln($command . '     ' . $class);
+        $router = $this->kernel()->getRouter();
+        $output->writeln('Path    Http methods');
+        foreach ($router->routes as $route) {
+            $output->writeln($route->path . '   ' . implode(', ', $route->httpMethods));
         }
         return self::SUCCESS;
     }

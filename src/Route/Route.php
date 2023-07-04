@@ -3,15 +3,14 @@
 namespace LiteApi\Route;
 
 use Exception;
+use LiteApi\Component\Common\BuiltinValue;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Container\ContainerNotFoundException;
 use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
-use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
-use LiteApi\Http\ResponseStatus;
 use LiteApi\Route\Attribute\HasJsonContent;
 use LiteApi\Route\Attribute\HasQuery;
 use Psr\Container\ContainerExceptionInterface;
@@ -22,18 +21,15 @@ use ReflectionNamedType;
 class Route
 {
 
-    private string $className;
-    private string $methodName;
-    public string $path;
-    public array $httpMethods;
     public ?string $regexPath = null;
 
-    public function __construct(string $className, string $methodName, string $path, array $httpMethods)
+    public function __construct(
+        private string $className,
+        private string $methodName,
+        public string $path,
+        public array $httpMethods
+    )
     {
-        $this->className = $className;
-        $this->methodName = $methodName;
-        $this->path = $path;
-        $this->httpMethods = $httpMethods;
     }
 
     /**
@@ -62,9 +58,9 @@ class Route
                 $parameterType = $parameter->getType();
                 if ($parameterType->isBuiltin()) {
                     $parameterTypeName = $parameterType->getName();
-                    if ($parameterTypeName == 'string') {
+                    if ($parameterTypeName === BuiltinValue::String->value) {
                         $this->regexPath = str_replace('{' . $pathParameters[$parameterIndex] . '}', '(\w+)', $this->regexPath);
-                    } elseif ($parameterTypeName == 'int') {
+                    } elseif ($parameterTypeName === BuiltinValue::Int->value) {
                         $this->regexPath = str_replace('{' . $pathParameters[$parameterIndex] . '}', '(\d+)', $this->regexPath);
                     } else {
                         throw new ProgrammerException(sprintf('Not supported builtin type %s for parameter %s', $parameterTypeName, $parameter->getName()));
@@ -82,11 +78,12 @@ class Route
     }
 
     /**
-     * @param ContainerLoader $container
+     * @param Container $container
      * @param Request $request
      * @return Response
+     * @throws ProgrammerException|Exception
      */
-    public function execute(ContainerLoader $container, Request $request): Response
+    public function execute(Container $container, Request $request): Response
     {
         try {
             $reflectionClass = new ReflectionClass($this->className);
@@ -100,40 +97,47 @@ class Route
             $reflectionMethod = $reflectionClass->getMethod($this->methodName);
             $args = $this->loadArguments($reflectionMethod->getParameters(), $container, $request); //, true
 
-            $hasQueryAttributes = $reflectionMethod->getAttributes(HasQuery::class);
-            if (!empty($hasQueryAttributes)) {
-                $request->parseQueryByDefinition($hasQueryAttributes[0]->getArguments()[0]);
-            }
-
-            $hasJsonContentAttributes = $reflectionMethod->getAttributes(HasJsonContent::class);
-            if (!empty($hasJsonContentAttributes)) {
-                $request->parseJsonContent($hasJsonContentAttributes[0]->getArguments()[0]);
-            }
-
             if (is_subclass_of($class, ContainerAwareInterface::class)) {
                 $class->setContainer($container);
             }
+        } catch (Exception $e) {
+            throw new ProgrammerException('Error while loading route, see previous exception', previous: $e);
+        }
 
-            $result = $reflectionMethod->invokeArgs($class, $args);
-            if ($result instanceof Response) {
-                return $result;
-            } elseif (is_array($result)) {
-                return new Response($result);
-            } elseif (is_string($result)) {
-                return new Response($result);
-            } else {
-                throw new ProgrammerException('Invalid object type of response: ' . var_export($result, true));
+        $hasQueryAttributes = $reflectionMethod->getAttributes(HasQuery::class);
+        if (!empty($hasQueryAttributes)) {
+            $queries = [];
+            foreach ($hasQueryAttributes as $hasQueryAttribute) {
+                /** @var HasQuery $queryInstance */
+                $queryInstance = $hasQueryAttribute->newInstance();
+                $queries[$queryInstance->key] = $queryInstance->type;
             }
-        } catch (HttpException $httpExc) {
-            return new Response($httpExc->getMessage(), ResponseStatus::from($httpExc->getCode()));
-        } catch (Exception $exc) {
-            return new Response('Internal server error occurred', ResponseStatus::InternalServerError);
+            $request->parseQueryByDefinition($queries);
+        }
+
+        $hasJsonContentAttributes = $reflectionMethod->getAttributes(HasJsonContent::class);
+        if (!empty($hasJsonContentAttributes)) {
+            /** @var HasJsonContent $jsonInstance */
+            $jsonInstance = $hasJsonContentAttributes[0]->newInstance();
+            $request->parseJsonContent($jsonInstance->requiredParams);
+        }
+
+        $result = $reflectionMethod->invokeArgs($class, $args);
+
+        if ($result instanceof Response) {
+            return $result;
+        } elseif (is_array($result)) {
+            return new Response($result);
+        } elseif (is_string($result)) {
+            return new Response($result);
+        } else {
+            throw new ProgrammerException('Invalid object type of response: ' . var_export($result, true));
         }
     }
 
     /**
      * @param \ReflectionParameter[] $parameters
-     * @param ContainerLoader $container
+     * @param Container $container
      * @param Request $request
      * @return array
      * @throws KernelException
@@ -142,7 +146,7 @@ class Route
      * @throws \ReflectionException
      * @throws ContainerNotFoundException
      */
-    private function loadArguments(array $parameters, ContainerLoader $container, Request $request): array
+    private function loadArguments(array $parameters, Container $container, Request $request): array
     {
         $pathParameters = [];
         if ($this->regexPath !== null && preg_match($this->regexPath, $request->path, $pathParameters) === false) {
@@ -155,19 +159,16 @@ class Route
             /** @var ReflectionNamedType $type */
             $type = $parameter->getType();
             if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
-                if ($type->getName() == Request::class) {
+                if ($type->getName() === Request::class) {
                     $args[] = $request;
-                } elseif ($type->getName() == Response::class) {
+                } elseif ($type->getName() === Response::class) {
                     $args[] = new Response();
                 } else {
                     $args[] = $container->get($type->getName());
                 }
             } else {
-                if ($type->getName() == 'int') {
-                    $args[] = (int) $pathParameters[$pathParameterIndex];
-                } else {
-                    $args[] = $pathParameters[$pathParameterIndex];
-                }
+                $enumType = BuiltinValue::from($type->getName());
+                $args[] = $enumType->convertValue($pathParameters[$pathParameterIndex]);
                 $pathParameterIndex++;
             }
         }

@@ -1,19 +1,11 @@
 <?php
 
-namespace LiteApi\Component\Util;
+namespace LiteApi\Component\Common;
 
-use Exception;
 use LiteApi\Exception\ProgrammerException;
 
-abstract class ArrayWrapper
+trait ArrayAssertionTrait
 {
-
-    public function __construct(array $config)
-    {
-        $this->wrap($config);
-    }
-
-    abstract protected function wrap(array $config): void;
 
     protected function assertList(array $item): void
     {
@@ -45,6 +37,14 @@ abstract class ArrayWrapper
                 throw new ProgrammerException(sprintf('Item %s should has key %s',
                     var_export($item, true), $key));
             }
+        }
+    }
+
+    protected function assertHasOnlyPermittedKeys(array $item, array $keys): void
+    {
+        $notPermittedKeys = array_diff(array_keys($item), $keys);
+        if (!empty($notPermittedKeys)) {
+            throw new ProgrammerException('Array has not permitted keys: ' . implode(', ', $notPermittedKeys));
         }
     }
 

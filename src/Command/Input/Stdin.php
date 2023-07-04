@@ -78,7 +78,7 @@ class Stdin implements InputInterface
         }
         foreach ($this->arguments as $argument) {
             $argument->setValue(array_shift($loadedArguments));
-            if ($argument->type == Argument::REQUIRED && $argument->value == null) {
+            if ($argument->type === Argument::REQUIRED && $argument->value === null) {
                 throw new Exception('Missing required argument: ' . $argument->name);
             }
         }
@@ -87,7 +87,7 @@ class Stdin implements InputInterface
             if ($loadedOption !== false) {
                 $option->setValue($loadedOption['value']);
             }
-            if ($option->type == Option::REQUIRED && $option->value == null) {
+            if ($option->type === Option::REQUIRED && $option->value === null) {
                 throw new Exception('Missing required option: ' . $option->name);
             }
         }
@@ -102,10 +102,10 @@ class Stdin implements InputInterface
     private function optionExists(array $options, string $shortName, string $longName): array|false
     {
         foreach ($options as $option) {
-            if ($shortName == $option['shortName']) {
+            if ($shortName === $option['shortName']) {
                 return $option;
             }
-            if ($longName == $option['longName']) {
+            if ($longName === $option['longName']) {
                 return $option;
             }
         }

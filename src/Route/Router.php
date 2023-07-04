@@ -3,8 +3,6 @@
 namespace LiteApi\Route;
 
 use Exception;
-use LiteApi\Container\ContainerLoader;
-use LiteApi\Exception\ProgrammerException;
 use LiteApi\Http\Exception\HttpException;
 use LiteApi\Http\Request;
 use LiteApi\Http\Response;
@@ -60,32 +58,14 @@ class Router
                     $methodNotAllowed = true;
                 } else {
                     $matchedRoute = $route;
+                    break;
                 }
-                break;
             }
         }
         if (!isset($matchedRoute)) {
             throw new HttpException($methodNotAllowed ? ResponseStatus::MethodNotAllowed : ResponseStatus::NotFound);
         }
         return $matchedRoute;
-    }
-
-    public function executeRoute(Route $route, ContainerLoader $container, Request $request): Response
-    {
-        try {
-            return $route->execute($container, $request);
-        } catch (HttpException $httpException) {
-            if (isset($this->onError[$httpException->status->value])) {
-                return $this->onError[$httpException->status->value]($httpException);
-            }
-            return new Response($httpException->getMessage(), $httpException->status);
-        } catch (Exception $e) {
-            $internalError = ResponseStatus::InternalServerError;
-            if (isset($this->onError[$internalError->value])) {
-                return $this->onError[$internalError->value]($e);
-            }
-            return new Response($internalError->getText(), $internalError);
-        }
     }
 
     /**
@@ -115,5 +95,26 @@ class Router
     public function registerOnError(int $statusCode, string $methodName): void
     {
         $this->onError[$statusCode] = $methodName;
+    }
+
+    /**
+     * @param Route[] $routes
+     * @return void
+     */
+    public function load(array $routes): void
+    {
+        foreach ($routes as $route) {
+            $route->makeRegexPath();
+        }
+        $this->routes = array_merge($this->routes, $routes);
+    }
+
+    /**
+     * @param array<int,string> $onErrors
+     * @return void
+     */
+    public function loadOnError(array $onErrors): void
+    {
+        $this->onError = array_merge($this->onError, $onErrors);
     }
 }

@@ -3,32 +3,30 @@
 namespace LiteApi\Command;
 
 use Exception;
+use LiteApi\Command\Input\InputInterface;
 use LiteApi\Command\Input\Stdin;
-use LiteApi\Command\Internal\CacheClearCommand;
-use LiteApi\Command\Internal\DebugCommandLoaderCommand;
-use LiteApi\Command\Internal\DebugContainerCommand;
+use LiteApi\Command\Internal\CacheClear;
+use LiteApi\Command\Internal\CacheWarmup;
 use LiteApi\Command\Internal\DebugCommand;
-use LiteApi\Command\Internal\DebugRouterCommand;
-use LiteApi\Command\Internal\KernelAwareCommand;
-use LiteApi\Command\Internal\WarmUpCacheCommand;
+use LiteApi\Command\Internal\DebugContainer;
+use LiteApi\Command\Internal\DebugRouter;
+use LiteApi\Command\Output\OutputInterface;
 use LiteApi\Command\Output\Stdout;
 use LiteApi\Container\Awareness\ContainerAwareInterface;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Container\Definition\ClassDefinition;
-use LiteApi\Kernel;
 use ReflectionClass;
 use ReflectionNamedType;
 
-class CommandsLoader
+class CommandHandler
 {
 
     private const KERNEL_COMMANDS = [
-        'debug:all' => DebugCommand::class,
-        'cache:warmup' => WarmUpCacheCommand::class,
-        'cache:clear' => CacheClearCommand::class,
-        'debug:container' => DebugContainerCommand::class,
-        'debug:router' => DebugRouterCommand::class,
-        'debug:command' => DebugCommandLoaderCommand::class
+        'cache:warmup' => CacheWarmup::class,
+        'cache:clear' => CacheClear::class,
+        'debug:container' => DebugContainer::class,
+        'debug:router' => DebugRouter::class,
+        'debug:command' => DebugCommand::class
     ];
 
     /**
@@ -47,15 +45,16 @@ class CommandsLoader
         $this->command[$commandName] = $className;
     }
 
-    /**
-     * @param string $commandName
-     * @param ContainerLoader $container
-     * @param null|Kernel $kernel
-     * @return int
-     */
-    public function runCommandFromName(string $commandName, ContainerLoader $container, ?Kernel $kernel = null): int
+    public function runCommandFromName(
+        string $commandName,
+        Container $container,
+        ?InputInterface $input = null,
+        ?OutputInterface $output = null
+    ): int
     {
-        $stdout = new Stdout();
+        if ($output === null){
+            $output = new Stdout();
+        }
         try {
             $className = $this->command[$commandName];
             $reflectionClass = new ReflectionClass($className);
@@ -77,30 +76,37 @@ class CommandsLoader
             } else {
                 $args = [];
             }
-            $stdin = new Stdin();
+            if ($input === null) {
+                $input = new Stdin();
+            }
             /** @var Command $command */
             $command = $reflectionClass->newInstanceArgs($args);
-            $command->prepare($stdin);
+            $command->prepare($input);
             /* Prepare input */
-            $stdin->load();
+            $input->load();
             /* Inject services */
             if (is_subclass_of($command, ContainerAwareInterface::class)) {
-                $command->setContainer($container);
+                $command->/** @scrutinizer ignore-call */setContainer($container);
             }
-            /* If $command is KernelAwareCommand set Kernel */
-            if ($kernel != null && is_subclass_of($command, KernelAwareCommand::class)) {
-                $command->setKernel($kernel);
-            }
-            return $command->execute($stdin, $stdout);
+            return $command->execute($input, $output);
         } catch (Exception $e) {
-            $stdout->writeln([
+            $output->writeln([
                 'Exception thrown during command',
                 $e->getMessage(),
                 'file: ' . $e->getFile(),
                 'line: ' . $e->getLine()
             ]);
-            return Command::FAILURE;
+            throw $e;
         }
+    }
+
+    /**
+     * @param array<string,string> $commands
+     * @return void
+     */
+    public function load(array $commands): void
+    {
+        $this->command = array_merge($this->command, $commands);
     }
 
     public function getCommandNameFromServer(): string

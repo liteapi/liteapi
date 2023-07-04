@@ -5,6 +5,7 @@ namespace LiteApi\Component\Util;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RegexIterator;
 use SplFileInfo;
 
 class FilesManager
@@ -25,6 +26,18 @@ class FilesManager
             }
         }
         rmdir($dirPath);
+    }
+
+    public function getClassesNamesFromPath(string $path, string $baseNamespace): array
+    {
+        $path = realpath($path);
+        $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+        $phpFiles = new RegexIterator($allFiles, '/\.php$/');
+        $classes = [];
+        foreach ($phpFiles as $phpFile) {
+            $classes[] = substr(str_replace('/', '\\', str_replace($path, $baseNamespace,  $phpFile->getRealpath())), 0, -4);
+        }
+        return $classes;
     }
 
 }

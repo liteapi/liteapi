@@ -2,9 +2,9 @@
 
 namespace LiteApi\Test\Command;
 
-use LiteApi\Command\CommandsLoader;
+use LiteApi\Command\CommandHandler;
 use PHPUnit\Framework\TestCase;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Test\resources\classes\CommandOne;
 
 /**
@@ -14,32 +14,32 @@ class CommandsLoaderTest extends TestCase
 {
 
     /**
-     * @covers \LiteApi\Command\CommandsLoader::runCommandFromName
+     * @covers \LiteApi\Command\CommandHandler::runCommandFromName
      */
     public function testRunCommandFromName()
     {
-        $commandsLoader = new CommandsLoader();
+        $commandsLoader = new CommandHandler();
         $commandsLoader->registerCommand('command:one', CommandOne::class);
         $this->expectOutputString('CommandOne is running');
-        $result = $commandsLoader->runCommandFromName('command:one', new ContainerLoader());
+        $result = $commandsLoader->runCommandFromName('command:one', new Container());
         $this->assertEquals(0, $result);
     }
 
     /**
-     * @covers \LiteApi\Command\CommandsLoader::getCommandNameFromServer
+     * @covers \LiteApi\Command\CommandHandler::getCommandNameFromServer
      */
     public function testGetCommandNameFromServer()
     {
-        $commandsLoader = new CommandsLoader();
+        $commandsLoader = new CommandHandler();
         $this->assertEquals($_SERVER['argv'][0], $commandsLoader->getCommandNameFromServer());
     }
 
     /**
-     * @covers \LiteApi\Command\CommandsLoader::registerCommand
+     * @covers \LiteApi\Command\CommandHandler::registerCommand
      */
     public function testRegisterCommand()
     {
-        $commandsLoader = new CommandsLoader();
+        $commandsLoader = new CommandHandler();
         $basicCommandsCount = count((new \ReflectionClass($commandsLoader))->getConstant('KERNEL_COMMANDS'));
         $this->assertCount($basicCommandsCount, $commandsLoader->command);
         $commandsLoader->registerCommand('command:one', CommandOne::class);

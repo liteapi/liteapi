@@ -11,7 +11,7 @@ use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
 use Psr\Container\ContainerInterface;
 
-class ContainerLoader implements ContainerInterface
+class Container implements ContainerInterface
 {
 
     /**
@@ -95,7 +95,7 @@ class ContainerLoader implements ContainerInterface
      * @param array<string,Definition> $definitions
      * @return void
      */
-    public function addDefinitions(array $definitions): void
+    public function load(array $definitions): void
     {
         foreach ($definitions as $id => $definition) {
             $this->definitions[$id] = $definition;

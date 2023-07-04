@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Config\Wrapper;
 
-use LiteApi\Component\Util\ArrayWrapper;
+use LiteApi\Component\Common\ArrayWrapper;
 
 class ConfigWrapper extends ArrayWrapper
 {
@@ -13,24 +13,39 @@ class ConfigWrapper extends ArrayWrapper
     private const CONTAINER = 'container';
     private const EXTENSIONS = 'extensions';
     private const CACHE = 'cache';
+    private const KERNEL_SUBSCRIBER = 'kernelSubscriber';
 
     public EnvWrapper $envParams;
     public string $projectDir;
+    /** @var string[] */
     public array $trustedIps;
+    /** @var string[] */
     public array $servicesDir;
     public array $container;
     public array $extensions;
     public ClassDefinitionWrapper $cache;
+    public ?string $kernelSubscriber = null;
 
-    public function __construct(EnvWrapper $env, array $config)
+    public function __construct(array $config, EnvWrapper $envWrapper)
     {
-        $this->envParams = $env;
-        $config = $this->resolveEnvParams($config);
+        $this->envParams = $envWrapper;
         parent::__construct($config);
     }
 
     protected function wrap(array $config): void
     {
+        $this->assertHasOnlyPermittedKeys(
+            $config,
+            [
+                self::PROJECT_DIR,
+                self::TRUSTED_IPS,
+                self::SERVICES,
+                self::CONTAINER,
+                self::EXTENSIONS,
+                self::CACHE,
+                self::KERNEL_SUBSCRIBER
+            ]
+        );
         $this->assertHasKeys(
             $config,
             [
@@ -64,21 +79,11 @@ class ConfigWrapper extends ArrayWrapper
 
         $this->assertIsArray($config[self::CACHE]);
         $this->cache = new ClassDefinitionWrapper($config[self::CACHE]);
-    }
 
-    protected function resolveEnvParams(array $config): array
-    {
-        return $config;
-        //TODO: make env params
-//        $configJson = json_encode($config);
-//        $pregResult = preg_match_all('/(%env\(.*\))/', $configJson, $matches);
-//        var_dump($matches);
-//        if ($pregResult > 0) {
-//            foreach ($matches as $match) {
-//
-//            }
-//        }
-//        return json_decode($configJson, true);
+        if (isset($config[self::KERNEL_SUBSCRIBER])) {
+            $kernelSubscriber = $config[self::KERNEL_SUBSCRIBER];
+            $this->assertIsString($kernelSubscriber);
+            $this->kernelSubscriber = $kernelSubscriber;
+        }
     }
-
 }

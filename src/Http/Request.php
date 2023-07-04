@@ -6,23 +6,35 @@ use BackedEnum;
 use LiteApi\Exception\ProgrammerException;
 use LiteApi\Http\Exception\HttpException;
 use LiteApi\Route\QueryType;
-use Psr\Log\LoggerInterface;
 
 /**
  * @phpstan-consistent-constructor
  */
 class Request
 {
+
+    public const METHOD_HEAD = 'HEAD';
+    public const METHOD_GET = 'GET';
+    public const METHOD_POST = 'POST';
+    public const METHOD_PUT = 'PUT';
+    public const METHOD_PATCH = 'PATCH';
+    public const METHOD_DELETE = 'DELETE';
+    public const METHOD_PURGE = 'PURGE';
+    public const METHOD_OPTIONS = 'OPTIONS';
+    public const METHOD_TRACE = 'TRACE';
+    public const METHOD_CONNECT = 'CONNECT';
+
     public string $ip;
     public string $path;
     public string $method;
     public ValuesBag $query;
     public ValuesBag $request;
     public ValuesBag $attributes;
-    public ValuesBag $server;
+    public ServerBag $server;
     public ValuesBag $files;
     public ValuesBag $cookies;
-    public ?string $content;
+    public HeadersBag $headers;
+    private ?string $content;
     public array $parsedContent = [];
 
     public function __construct(
@@ -38,14 +50,15 @@ class Request
         $this->query = new ValuesBag($query);
         $this->request = new ValuesBag($request);
         $this->attributes = new ValuesBag($attributes);
-        $this->server = new ValuesBag($server);
+        $this->server = new ServerBag($server);
         $this->files = new ValuesBag($files);
         $this->cookies = new ValuesBag($cookies);
         $this->content = $content;
-
+        
         $this->ip = $this->server->get('REMOTE_ADDR');
         $this->path = $this->server->get('REQUEST_URI');
-        $this->method = $this->server->get('REQUEST_METHOD', 'GET');
+        $this->method = $this->server->get('REQUEST_METHOD');
+        $this->headers = $this->server->getHeaders();
     }
 
     public static function makeFromGlobals(): static
@@ -53,20 +66,57 @@ class Request
         return new static($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
     }
 
+    /**
+     * @param bool $asResource
+     * @return string|resource
+     */
+    public function getContent(bool $asResource = false)
+    {
+        if ($this->content !== null) {
+            if ($asResource === true) {
+                $resource = fopen('php://temp', 'r+');
+                if ($resource === false) {
+                    throw new HttpException(ResponseStatus::BadRequest,
+                        'Cannot open php:://temp resource to write content');
+                }
+                fwrite($resource, $this->content);
+                rewind($resource);
+                return $resource;
+            } else {
+                return $this->content;
+            }
+        }
+        if ($asResource === true) {
+            $resource = fopen('php://input', 'r');
+            if ($resource === false) {
+                throw new HttpException(ResponseStatus::BadRequest,
+                    'Cannot read request content');
+            }
+            return $resource;
+        }
+        $content = file_get_contents('php://input');
+        if ($content === false) {
+            throw new HttpException(ResponseStatus::BadRequest,
+                'Cannot read request content');
+        }
+        $this->content = $content;
+        return $this->content;
+    }
+
     public function getRequestLogMessage(): string
     {
-        return sprintf('Requested path: %s, with %s method from ip: %s', $this->path, $this->method, $this->ip);
+        return sprintf('Requested path: %s, with method %s from ip: %s', $this->path, $this->method, $this->ip);
     }
 
     /**
-     * @param array $queryDefinitions
+     * @param array<string,string|QueryType> $queryDefinitions
      * @return void
      * @throws HttpException
      * @throws ProgrammerException
      */
     public function parseQueryByDefinition(array $queryDefinitions): void
     {
-        $queryParams = $this->query->parameters;
+        $queryParams = $this->query->values;
         foreach ($queryDefinitions as $key => $definition) {
             if (!isset($queryParams[$key])) {
                 continue;
@@ -92,24 +142,13 @@ class Request
     }
 
     /**
-     * @param string[] $requiredParams
+     * @param string[] $requiredKeys
      * @return void
      * @throws HttpException
      */
-    public function parseJsonContent(array $requiredParams): void
+    public function parseJsonContent(array $requiredKeys): void
     {
-        if (!is_string($this->content)) {
-            throw new HttpException(ResponseStatus::BadRequest, 'Content is not a valid string');
-        }
-        $this->parsedContent = json_decode($this->content, true);
-        if ($this->parsedContent === false) {
-            throw new HttpException(ResponseStatus::BadRequest, 'Content is not valid json');
-        }
-        foreach ($requiredParams as $requiredParam) {
-            if (!isset($this->parsedContent[$requiredParam])) {
-                throw new HttpException(ResponseStatus::BadRequest, 'Missing required param ' . $requiredParam);
-            }
-        }
+        $this->parsedContent = RequestHelper::parseJson($this->getContent(), $requiredKeys);
     }
 
 }

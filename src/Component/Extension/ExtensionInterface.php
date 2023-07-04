@@ -2,8 +2,8 @@
 
 namespace LiteApi\Component\Extension;
 
-use LiteApi\Command\CommandsLoader;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Command\CommandHandler;
+use LiteApi\Container\Container;
 use LiteApi\Route\Router;
 
 interface ExtensionInterface
@@ -11,12 +11,12 @@ interface ExtensionInterface
 
     public function loadConfig(array $config): void;
 
-    public static function validateConfig(array $config): void;
+    public function validateConfig(): void;
 
-    public function registerServices(ContainerLoader $container): void;
+    public function registerServices(Container $container): void;
 
     public function registerRoutes(Router $router): void;
 
-    public function registerCommands(CommandsLoader $commandLoader): void;
+    public function registerCommands(CommandHandler $commandLoader): void;
 
 }

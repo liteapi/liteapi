@@ -5,7 +5,7 @@ namespace LiteApi\Test;
 use LiteApi\Component\Config\ConfigLoader;
 use LiteApi\Component\Config\Env;
 use PHPUnit\Framework\TestCase;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Container\Container;
 use LiteApi\Kernel;
 use LiteApi\Test\resources\classes\Logger;
 use ReflectionClass;
@@ -18,7 +18,6 @@ class KernelTest extends TestCase
 
     private function createKernel(): Kernel
     {
-        $env = new Env();
         $configDir = __DIR__ . '/resources/config/base_config';
         $configLoader = new ConfigLoader($configDir);
         $config = $configLoader->getConfig();
@@ -40,9 +39,8 @@ class KernelTest extends TestCase
     public function testBoot(): void
     {
         $kernel = $this->createKernel();
-        $reflectionClass = new ReflectionClass(Kernel::class);
-        /** @var ContainerLoader $container */
-        $container = $reflectionClass->getProperty('containerLoader')->getValue($kernel);
+        $kernel->boot();
+        $container = $kernel->getContainer();
         $this->assertTrue($container->has(Logger::class));
         /** @var Logger $logger */
         $logger = $container->get(Logger::class);

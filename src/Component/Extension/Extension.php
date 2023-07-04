@@ -2,12 +2,15 @@
 
 namespace LiteApi\Component\Extension;
 
-use LiteApi\Command\CommandsLoader;
-use LiteApi\Container\ContainerLoader;
+use LiteApi\Command\CommandHandler;
+use LiteApi\Component\Common\ArrayAssertionTrait;
+use LiteApi\Container\Container;
 use LiteApi\Route\Router;
 
 class Extension implements ExtensionInterface
 {
+
+    use ArrayAssertionTrait;
 
     protected array $config = [];
 
@@ -16,12 +19,12 @@ class Extension implements ExtensionInterface
         $this->config = $config;
     }
 
-    public static function validateConfig(array $config): void
+    public function validateConfig(): void
     {
 
     }
 
-    public function registerServices(ContainerLoader $container): void
+    public function registerServices(Container $container): void
     {
 
     }
@@ -31,7 +34,7 @@ class Extension implements ExtensionInterface
 
     }
 
-    public function registerCommands(CommandsLoader $commandLoader): void
+    public function registerCommands(CommandHandler $commandLoader): void
     {
 
     }

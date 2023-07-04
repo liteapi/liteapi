@@ -1,7 +1,8 @@
 <?php
 
-namespace LiteApi\Component\Cache\Command;
+namespace LiteApi\Command\Internal;
 
+use LiteApi\Command\AsCommand;
 use LiteApi\Command\Command;
 use LiteApi\Command\Input\InputInterface;
 use LiteApi\Command\Output\OutputInterface;
@@ -9,9 +10,9 @@ use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
 use LiteApi\Kernel;
 use ReflectionClass;
-use Symfony\Component\Cache\Adapter\AbstractAdapter;
 
-class SymfonyCacheWarmupCommand extends Command implements ContainerAwareInterface
+#[AsCommand('cache:warmup')]
+class CacheWarmup extends Command implements ContainerAwareInterface
 {
 
     use ContainerAwareTrait;
@@ -21,15 +22,14 @@ class SymfonyCacheWarmupCommand extends Command implements ContainerAwareInterfa
         return $this->container->get(Kernel::class);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $reflectionClass = new ReflectionClass(Kernel::class);
-        /** @var AbstractAdapter $adapter */
-        $adapter = $reflectionClass->getProperty('kernelCache')->getValue($this->kernel());
-        $adapter->reset();
+        $this->kernel()->getKernelCache()->clear();
+        $kernel = clone $this->kernel();
+        $reflectionClass = new ReflectionClass($kernel);
+        $property = $reflectionClass->getProperty('makeCacheOnDestruct');
+        $property->setValue($kernel, true);
+        unset($kernel);
         return self::SUCCESS;
     }
 }

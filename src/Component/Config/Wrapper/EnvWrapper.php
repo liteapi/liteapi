@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Config\Wrapper;
 
-use LiteApi\Component\Util\ArrayWrapper;
+use LiteApi\Component\Common\ArrayWrapper;
 use LiteApi\Exception\ProgrammerException;
 
 class EnvWrapper extends ArrayWrapper
@@ -14,9 +14,9 @@ class EnvWrapper extends ArrayWrapper
 
     protected function wrap(array $config): void
     {
-        $envName = 'ENV';
-        $debugName = 'DEBUG';
-        //$secretKey = 'SECRET_KEY';
+        $envName = 'APP_ENV';
+        $debugName = 'APP_DEBUG';
+        //$secretKey = 'APP_SECRET_KEY';
 
         $this->assertHasKeys($config, [$envName, $debugName]);
         if (!in_array($config[$envName], ['dev', 'prod', 'test'])) {

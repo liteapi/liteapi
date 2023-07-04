@@ -18,6 +18,10 @@ class AsRoute
     public array $methods;
     //public array $requirements;
 
+    /**
+     * @param string $path
+     * @param string[] $methods
+     */
     public function __construct(string $path, array $methods = [])
     {
         $this->path = $path;

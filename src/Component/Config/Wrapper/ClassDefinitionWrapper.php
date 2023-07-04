@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Config\Wrapper;
 
-use LiteApi\Component\Util\ArrayWrapper;
+use LiteApi\Component\Common\ArrayWrapper;
 use ReflectionClass;
 
 class ClassDefinitionWrapper extends ArrayWrapper
@@ -22,6 +22,7 @@ class ClassDefinitionWrapper extends ArrayWrapper
         $settersName = 'setters';
 
         $this->assertHasKeys($config, [$className, $argsName]);
+        $this->assertHasOnlyPermittedKeys($config, [$className, $argsName, $settersName]);
         $class = $config[$className];
         $this->assertIsString($class);
         $this->class = $class;

@@ -9,7 +9,7 @@ use LiteApi\Container\Awareness\ContainerAwareInterface;
 use LiteApi\Container\Awareness\ContainerAwareTrait;
 use LiteApi\Kernel;
 
-class DebugCommand extends Command implements ContainerAwareInterface
+class DebugContainer extends Command implements ContainerAwareInterface
 {
 
     use ContainerAwareTrait;
@@ -19,16 +19,10 @@ class DebugCommand extends Command implements ContainerAwareInterface
         return $this->container->get(Kernel::class);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $commandHandler = $this->kernel()->getCommandHandler();
-        $output->writeln('Command    :   Class');
-        foreach ($commandHandler->command as $command => $class) {
-            $output->writeln($command . '     ' . $class);
-        }
+        $container = $this->kernel()->getContainer();
+        $output->writeln(array_keys($container->definitions));
         return self::SUCCESS;
     }
 }
