@@ -31,10 +31,10 @@ class Kernel
     private const PROPERTIES_TO_CACHE = [
         'container' => 'kernel.container',
         'router' => 'kernel.router',
-        'commandLoader' => 'kernel.command'
+        'commandHandler' => 'kernel.command'
     ];
 
-    public string $projectDir;
+    protected ConfigWrapper $config;
     public string $env;
     public bool $debug;
     public Router $router;
@@ -44,54 +44,64 @@ class Kernel
     protected CacheItemPoolInterface $kernelCache;
     protected ?LoggerInterface $kernelLogger = null;
     protected bool $makeCacheOnDestruct = false;
+    protected bool $useCache = true;
+    protected bool $isBooted = false;
 
     public function __construct(ConfigWrapper $config, ?CacheItemPoolInterface $kernelCache = null)
     {
-        $this->projectDir = $config->projectDir;
+        $this->config = $config;
         $this->env = $config->envParams->env;
         $this->debug = $config->envParams->debug;
         $this->kernelCache = $kernelCache === null ? $config->cache->createObject() : $kernelCache;
-        $this->boot($config);
-        $this->ensureContainerHasKernelServices();
-        $this->tryToSetKernelLogger();
-
-        $this->eventHandler = new Handler($config->kernelSubscriber);
-        $this->eventHandler->trigger(KernelEvent::AfterBoot, $this->container);
     }
 
-    protected function boot(ConfigWrapper $config): void
+    public function boot(): void
     {
-        $loaded = true;
-        foreach (self::PROPERTIES_TO_CACHE as $property => $cacheName) {
-            $routerItem = $this->kernelCache->getItem($cacheName);
-            if (!$routerItem->isHit()) {
-                $loaded = false;
-                break;
+        if ($this->useCache) {
+            $loaded = true;
+            foreach (self::PROPERTIES_TO_CACHE as $property => $cacheName) {
+                $routerItem = $this->kernelCache->getItem($cacheName);
+                if (!$routerItem->isHit()) {
+                    $loaded = false;
+                    break;
+                }
+                $this->$property = $routerItem->get();
             }
-            $this->$property = $routerItem->get();
-        }
-        if ($loaded) {
-            return;
+            if ($loaded) {
+                return;
+            }
         }
         $this->container = new Container();
-        $this->router = new Router($config->trustedIps);
+        $this->router = new Router($this->config->trustedIps);
         $this->commandHandler = new CommandHandler();
 
         $classWalker = new ClassWalker();
-        foreach ($config->servicesDir as $serviceDir) {
+        foreach ($this->config->servicesDir as $serviceDir) {
             $definitions = $classWalker->register($serviceDir);
             $this->loadFromDefinitions($definitions);
         }
 
-        $extensionLoader = new ExtensionLoader($config->extensions);
+        $extensionLoader = new ExtensionLoader($this->config->extensions);
         $extensionLoader->loadExtensions(
             $this->container,
             $this->router,
             $this->commandHandler
         );
-        $this->container->createDefinitionsFromConfig($config->container);
+        $this->container->createDefinitionsFromConfig($this->config->container);
 
-        $this->makeCacheOnDestruct = true;
+        if ($this->useCache) {
+            $this->makeCacheOnDestruct = true;
+        }
+        $this->isBooted = true;
+        $this->afterBoot();
+    }
+
+    protected function afterBoot(): void
+    {
+        $this->ensureContainerHasKernelServices();
+        $this->tryToSetKernelLogger();
+        $this->eventHandler = new Handler($this->config->kernelSubscriber);
+        $this->eventHandler->trigger(KernelEvent::AfterBoot, $this->container);
     }
 
     private function loadFromDefinitions(DefinitionsTransfer $definitions): void
@@ -157,8 +167,11 @@ class Kernel
 
     public function __destruct()
     {
+        if ($this->isBooted === false) {
+            return;
+        }
         $this->eventHandler->trigger(KernelEvent::OnDestruct, $this->container);
-        if ($this->makeCacheOnDestruct) {
+        if ($this->useCache && $this->makeCacheOnDestruct) {
             $this->prepareContainerToCache();
             foreach (self::PROPERTIES_TO_CACHE as $property => $cacheName) {
                 $cacheItem = $this->kernelCache->getItem($cacheName);
@@ -174,6 +187,11 @@ class Kernel
         if ($this->container->has(Request::class)) {
             unset($this->container->definitions[Request::class]);
         }
+    }
+
+    public function setUseCache(bool $useCache): void
+    {
+        $this->useCache = $useCache;
     }
 
     public function getKernelCache(): CacheItemPoolInterface
@@ -194,5 +212,10 @@ class Kernel
     public function getCommandHandler(): CommandHandler
     {
         return $this->commandHandler;
+    }
+
+    public function getProjectDir(): string
+    {
+        return $this->config->projectDir;
     }
 }

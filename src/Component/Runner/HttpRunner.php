@@ -22,6 +22,7 @@ class HttpRunner implements RunnerInterface
      */
     public function run(): void
     {
+        $this->kernel->boot();
         $response = $this->kernel->handleRequest($this->request);
         $response->send();
     }
