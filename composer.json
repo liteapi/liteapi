@@ -20,7 +20,7 @@
         }
     },
     "suggest": {
-        "monolog/monolog": "Suggested logger library. It has extension: pjpawel\\LightApi\\Component\\Logger\\MonologExtension"
+        "monolog/monolog": "Suggested logger library. It has extension: LiteApi\\MonologExtension\\MonologExtension"
     },
     "require": {
         "php": ">=8.1",
