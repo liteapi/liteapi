@@ -11,7 +11,8 @@ use LiteApi\Exception\ProgrammerException;
 class ConfigLoader
 {
 
-    private const CACHE_SERIALIZED_PATH = '/var/cache/config';
+    private const CACHE_SERIALIZED_DIR = DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache';
+    private const CACHE_SERIALIZED_PATH = self::CACHE_SERIALIZED_DIR . DIRECTORY_SEPARATOR . 'config';
 
     private EnvWrapper $envWrapper;
 
@@ -43,6 +44,7 @@ class ConfigLoader
 
     private function serializeConfig(ConfigWrapper $config): void
     {
+        mkdir(self::CACHE_SERIALIZED_DIR, 0777, true);
         file_put_contents(
             $this->projectDir . self::CACHE_SERIALIZED_PATH,
             serialize($config)
