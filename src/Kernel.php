@@ -68,6 +68,8 @@ class Kernel
                 $this->$property = $routerItem->get();
             }
             if ($loaded) {
+                $this->isBooted = true;
+                $this->afterBoot();
                 return;
             }
         }
