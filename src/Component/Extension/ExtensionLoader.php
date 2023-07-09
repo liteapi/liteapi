@@ -17,26 +17,36 @@ class ExtensionLoader
     {
     }
 
-    public function loadExtensions(
-        Container      $container,
-        Router         $router,
-        CommandHandler $commandLoader
-    ): void
+    public function loadExtensions(Container $container, Router $router, CommandHandler $commandHandler): void
     {
         foreach ($this->extensionConfigs as $extensionName => $extensionConfig) {
-            if (is_int($extensionName)) {
-                $extensionClass = $extensionConfig;
-                $extensionConfig = [];
-            } else {
-                $extensionClass = $extensionName;
-            }
-            /** @var ExtensionInterface $extension */
-            $extension = new $extensionClass();
-            $extension->loadConfig($extensionConfig);
-            $extension->validateConfig();
+            $extension = $this->loadClass($extensionName, $extensionConfig);
             $extension->registerServices($container);
             $extension->registerRoutes($router);
-            $extension->registerCommands($commandLoader);
+            $extension->registerCommands($commandHandler);
+        }
+    }
+
+    private function loadClass(string|int $extensionName, string|array $extensionConfig): Extension
+    {
+        if (is_int($extensionName)) {
+            $extensionClass = $extensionConfig;
+            $extensionConfig = [];
+        } else {
+            $extensionClass = $extensionName;
+        }
+        /** @var Extension $extension */
+        $extension = new $extensionClass();
+        $extension->loadConfig($extensionConfig);
+        $extension->validateConfig();
+        return $extension;
+    }
+
+    public function loadFiles(string $projectDir): void
+    {
+        foreach ($this->extensionConfigs as $extensionName => $extensionConfig) {
+            $extension = $this->loadClass($extensionName, $extensionConfig);
+            $extension->loadFiles($projectDir);
         }
     }
 }
