@@ -20,7 +20,7 @@ class ConfigLoader
 
     private EnvWrapper $envWrapper;
     private ConfigWrapper $config;
-    private CacheItemPoolInterface $cache;
+    private ?CacheItemPoolInterface $cache = null;
 
     public function __construct(
         private readonly string $projectDir
@@ -34,13 +34,13 @@ class ConfigLoader
         $envName = 'APP_ENV';
         $envDebug = 'APP_DEBUG';
         $this->envWrapper = new EnvWrapper([$envName => Env::getValue($envName), $envDebug => Env::getValue($envDebug)]);
-        $cacheConfigFile = $this->projectDir . self::CACHE_CONFIG_FILE;
-        if (file_exists($cacheConfigFile) === false) {
-            throw new Exception('Missing cache config file');
-        }
-        $cacheConfig = require $cacheConfigFile;
-        $this->cache = (new ClassDefinitionWrapper($cacheConfig))->createObject();
         if ($useCache === true) {
+            $cacheConfigFile = $this->projectDir . self::CACHE_CONFIG_FILE;
+            if (file_exists($cacheConfigFile) === false) {
+                throw new Exception('Missing cache config file');
+            }
+            $cacheConfig = require $cacheConfigFile;
+            $this->cache = (new ClassDefinitionWrapper($cacheConfig))->createObject();
             $serializeCacheItem = $this->cache->getItem(self::CACHE_SERIALIZE_KEY);
             if ($serializeCacheItem->isHit()) {
                 $this->config = $serializeCacheItem->get();
@@ -115,7 +115,7 @@ class ConfigLoader
         return $this->config;
     }
 
-    public function getCache(): CacheItemPoolInterface
+    public function getCache(): ?CacheItemPoolInterface
     {
         return $this->cache;
     }
