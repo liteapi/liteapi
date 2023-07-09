@@ -7,6 +7,7 @@ use LiteApi\Kernel;
 class CliRunner implements RunnerInterface
 {
 
+    private int $result;
 
     public function __construct(
         private readonly Kernel  $kernel,
@@ -20,7 +21,11 @@ class CliRunner implements RunnerInterface
     public function run(): void
     {
         $this->kernel->boot();
-        $result = $this->kernel->handleCommand($this->commandName);
-        exit($result);
+        $this->result = $this->kernel->handleCommand($this->commandName);
+    }
+
+    public function getResult(): int
+    {
+        return $this->result;
     }
 }
