@@ -200,8 +200,11 @@ class Kernel
         $this->useCache = $useCache;
     }
 
-    public function getKernelCache(): CacheItemPoolInterface
+    public function getKernelCache(): ?CacheItemPoolInterface
     {
+        if (isset($this->kernelCache)) {
+            return null;
+        }
         return $this->kernelCache;
     }
 
@@ -223,5 +226,10 @@ class Kernel
     public function getProjectDir(): string
     {
         return $this->config->projectDir;
+    }
+
+    public function getConfig(): ConfigWrapper
+    {
+        return $this->config;
     }
 }
