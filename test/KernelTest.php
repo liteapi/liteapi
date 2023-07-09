@@ -20,8 +20,9 @@ class KernelTest extends TestCase
     {
         $configDir = __DIR__ . '/resources/config/base_config';
         $configLoader = new ConfigLoader($configDir);
+        $configLoader->loadConfig();
         $config = $configLoader->getConfig();
-        return new Kernel($config);
+        return new Kernel($config, $configLoader->getCache());
     }
 
     /**

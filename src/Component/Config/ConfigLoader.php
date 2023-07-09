@@ -2,19 +2,25 @@
 
 namespace LiteApi\Component\Config;
 
+use Exception;
 use LiteApi\Component\Common\BuiltinValue;
+use LiteApi\Component\Config\Wrapper\ClassDefinitionWrapper;
 use LiteApi\Component\Config\Wrapper\ConfigWrapper;
 use LiteApi\Component\Config\Wrapper\EnvWrapper;
 use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
+use Psr\Cache\CacheItemPoolInterface;
 
 class ConfigLoader
 {
 
-    private const CACHE_SERIALIZED_DIR = DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache';
-    private const CACHE_SERIALIZED_PATH = self::CACHE_SERIALIZED_DIR . DIRECTORY_SEPARATOR . 'config';
+    private const CACHE_CONFIG_FILE = DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'cache.php';
+    private const CONFIG_FILE = DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
+    private const CACHE_SERIALIZE_KEY = 'kernel.config';
 
     private EnvWrapper $envWrapper;
+    private ConfigWrapper $config;
+    private CacheItemPoolInterface $cache;
 
     public function __construct(
         private readonly string $projectDir
@@ -22,33 +28,32 @@ class ConfigLoader
     {
     }
 
-    public function getConfig(): ConfigWrapper
+    public function loadConfig(bool $useCache = true): void
     {
-        $serializedConfigPath = $this->projectDir . self::CACHE_SERIALIZED_PATH; //TODO: different path?
-        if (file_exists($serializedConfigPath)) {
-            $lastModified = filemtime($serializedConfigPath);
-            if ($lastModified !== false && $lastModified+360 > time()) {
-                return unserialize(file_get_contents($serializedConfigPath));
+        Env::load($this->projectDir);
+        $envName = 'APP_ENV';
+        $envDebug = 'APP_DEBUG';
+        $this->envWrapper = new EnvWrapper([$envName => Env::getValue($envName), $envDebug => Env::getValue($envDebug)]);
+        $cacheConfigFile = $this->projectDir . self::CACHE_CONFIG_FILE;
+        if (file_exists($cacheConfigFile) === false) {
+            throw new Exception('Missing cache config file');
+        }
+        $cacheConfig = require $cacheConfigFile;
+        $this->cache = (new ClassDefinitionWrapper($cacheConfig))->createObject();
+        if ($useCache === true) {
+            $serializeCacheItem = $this->cache->getItem(self::CACHE_SERIALIZE_KEY);
+            if ($serializeCacheItem->isHit()) {
+                $this->config = $serializeCacheItem->get();
+                return;
             }
         }
-        Env::load($this->projectDir);
-        $this->envWrapper = new EnvWrapper(['APP_ENV'=> Env::getValue('APP_ENV'), 'APP_DEBUG' => Env::getValue('APP_DEBUG')]);
-        $configArray = require $this->projectDir . '/config/config.php';
+        $configArray = require $this->projectDir . self::CONFIG_FILE;
         $this->resolveEnvParams($configArray);
-        $config = new ConfigWrapper($configArray, $this->envWrapper);
-        if (!$config->envParams->debug) {
-            $this->serializeConfig($config);
+        $this->config = new ConfigWrapper($configArray, $this->envWrapper);
+        if ($useCache === true) {
+            $serializeCacheItem = $this->cache->getItem(self::CACHE_SERIALIZE_KEY);
+            $serializeCacheItem->set($this->config);
         }
-        return $config;
-    }
-
-    private function serializeConfig(ConfigWrapper $config): void
-    {
-        mkdir(self::CACHE_SERIALIZED_DIR, 0777, true);
-        file_put_contents(
-            $this->projectDir . self::CACHE_SERIALIZED_PATH,
-            serialize($config)
-        );
     }
 
     /**
@@ -103,6 +108,16 @@ class ConfigLoader
             return $type !== null ? $type->convertValue($value) : $value;
         }
         return Env::getValue($name, $type);
+    }
+
+    public function getConfig(): ConfigWrapper
+    {
+        return $this->config;
+    }
+
+    public function getCache(): CacheItemPoolInterface
+    {
+        return $this->cache;
     }
 
 }

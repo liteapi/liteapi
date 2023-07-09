@@ -52,7 +52,11 @@ class Kernel
         $this->config = $config;
         $this->env = $config->envParams->env;
         $this->debug = $config->envParams->debug;
-        $this->kernelCache = $kernelCache === null ? $config->cache->createObject() : $kernelCache;
+        if ($kernelCache === null) {
+            $this->useCache = false;
+        } else {
+            $this->kernelCache = $kernelCache;
+        }
     }
 
     public function boot(): void
@@ -60,7 +64,7 @@ class Kernel
         if ($this->useCache) {
             $loaded = true;
             foreach (self::PROPERTIES_TO_CACHE as $property => $cacheName) {
-                $routerItem = $this->kernelCache->getItem($cacheName);
+                $routerItem = $this->kernelCache->getItem($this->env . '.' . $cacheName);
                 if (!$routerItem->isHit()) {
                     $loaded = false;
                     break;
@@ -176,7 +180,7 @@ class Kernel
         if ($this->useCache && $this->makeCacheOnDestruct) {
             $this->prepareContainerToCache();
             foreach (self::PROPERTIES_TO_CACHE as $property => $cacheName) {
-                $cacheItem = $this->kernelCache->getItem($cacheName);
+                $cacheItem = $this->kernelCache->getItem($this->env . '.' . $cacheName);
                 $cacheItem->set($this->$property);
                 $this->kernelCache->save($cacheItem);
             }

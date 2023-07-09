@@ -12,7 +12,6 @@ class ConfigWrapper extends ArrayWrapper
     private const SERVICES = 'services';
     private const CONTAINER = 'container';
     private const EXTENSIONS = 'extensions';
-    private const CACHE = 'cache';
     private const KERNEL_SUBSCRIBER = 'kernelSubscriber';
 
     public EnvWrapper $envParams;
@@ -23,7 +22,6 @@ class ConfigWrapper extends ArrayWrapper
     public array $servicesDir;
     public array $container;
     public array $extensions;
-    public ClassDefinitionWrapper $cache;
     public ?string $kernelSubscriber = null;
 
     public function __construct(array $config, EnvWrapper $envWrapper)
@@ -42,7 +40,6 @@ class ConfigWrapper extends ArrayWrapper
                 self::SERVICES,
                 self::CONTAINER,
                 self::EXTENSIONS,
-                self::CACHE,
                 self::KERNEL_SUBSCRIBER
             ]
         );
@@ -53,8 +50,7 @@ class ConfigWrapper extends ArrayWrapper
                 self::TRUSTED_IPS,
                 self::SERVICES,
                 self::CONTAINER,
-                self::EXTENSIONS,
-                self::CACHE
+                self::EXTENSIONS
             ]
         );
 
@@ -76,9 +72,6 @@ class ConfigWrapper extends ArrayWrapper
 
         $this->assertIsArray($config[self::EXTENSIONS]);
         $this->extensions = $config[self::EXTENSIONS];//new ExtensionsWrapper($config[self::EXTENSIONS]);
-
-        $this->assertIsArray($config[self::CACHE]);
-        $this->cache = new ClassDefinitionWrapper($config[self::CACHE]);
 
         if (isset($config[self::KERNEL_SUBSCRIBER])) {
             $kernelSubscriber = $config[self::KERNEL_SUBSCRIBER];
