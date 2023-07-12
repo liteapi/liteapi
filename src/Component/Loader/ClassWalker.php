@@ -5,9 +5,9 @@ namespace LiteApi\Component\Loader;
 use LiteApi\Command\AsCommand;
 use LiteApi\Container\Definition\ClassDefinition;
 use LiteApi\Exception\ProgrammerException;
-use LiteApi\Route\Attribute\AsRoute;
-use LiteApi\Route\Attribute\OnError;
-use LiteApi\Route\Route;
+use LiteApi\Http\Request\Attribute\AsRoute;
+use LiteApi\Http\Request\Attribute\OnError;
+use LiteApi\Http\Route;
 use ReflectionClass;
 
 class ClassWalker
@@ -55,7 +55,7 @@ class ClassWalker
                 }
                 $attributes = $method->getAttributes(OnError::class);
                 foreach ($attributes as $attribute) {
-                    /** @var OnError $onError */
+                    /** @var \LiteApi\Http\Request\Attribute\OnError $onError */
                     $onError = $attribute->newInstance();
                     $onErrors[$onError->status->value] = $className . '::' . $method->getName();
                 }

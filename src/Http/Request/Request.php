@@ -1,11 +1,13 @@
 <?php
 
-namespace LiteApi\Http;
+namespace LiteApi\Http\Request;
 
 use BackedEnum;
+use LiteApi\Component\Util\ValuesBag;
 use LiteApi\Exception\ProgrammerException;
 use LiteApi\Http\Exception\HttpException;
-use LiteApi\Route\QueryType;
+use LiteApi\Http\HeadersBag;
+use LiteApi\Http\Response\ResponseStatus;
 
 /**
  * @phpstan-consistent-constructor
@@ -109,7 +111,7 @@ class Request
     }
 
     /**
-     * @param array<string,string|QueryType> $queryDefinitions
+     * @param array<string,string|\LiteApi\Http\Request\QueryType> $queryDefinitions
      * @return void
      * @throws HttpException
      * @throws ProgrammerException

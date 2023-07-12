@@ -4,7 +4,7 @@ namespace LiteApi\Component\Extension;
 
 use LiteApi\Command\CommandHandler;
 use LiteApi\Container\Container;
-use LiteApi\Route\Router;
+use LiteApi\Http\Router;
 
 class ExtensionLoader
 {

@@ -2,6 +2,8 @@
 
 namespace LiteApi\Http;
 
+use LiteApi\Component\Util\ValuesBag;
+
 class HeadersBag extends ValuesBag
 {
 

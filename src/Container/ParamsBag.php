@@ -2,7 +2,7 @@
 
 namespace LiteApi\Container;
 
-use LiteApi\Http\ValuesBag;
+use LiteApi\Component\Util\ValuesBag;
 
 class ParamsBag extends ValuesBag
 {

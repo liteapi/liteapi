@@ -1,23 +1,23 @@
 <?php
 
-namespace LiteApi\Test\Route;
+namespace LiteApi\Test\Http;
 
 use LiteApi\Container\Container;
-use LiteApi\Route\Route;
-use PHPUnit\Framework\TestCase;
-use LiteApi\Http\Request;
+use LiteApi\Http\Request\Request;
+use LiteApi\Http\Route;
 use LiteApi\Test\resources\classes\ControllerOne;
 use LiteApi\Test\resources\classes\ControllerTwo;
 use LiteApi\Test\resources\classes\Logger;
+use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \LiteApi\Route\Route
+ * @covers \LiteApi\Http\Route
  */
 class RouteTest extends TestCase
 {
 
     /**
-     * @covers \LiteApi\Route\Route
+     * @covers \LiteApi\Http\Route
      */
     public function test__construct(): void
     {
@@ -29,7 +29,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Route\Route
+     * @covers \LiteApi\Http\Route
      */
     public function test__constructWithStringParam(): void
     {
@@ -41,7 +41,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Route\Route
+     * @covers \LiteApi\Http\Route
      */
     public function test__constructWithIntParam(): void
     {
@@ -53,7 +53,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Route\Route
+     * @covers \LiteApi\Http\Route
      */
     public function test__constructWithTwoParams(): void
     {
@@ -65,7 +65,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Route\Route::execute
+     * @covers \LiteApi\Http\Route::execute
      */
     public function testExecute(): void
     {
@@ -78,7 +78,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Route\Route::execute
+     * @covers \LiteApi\Http\Route::execute
      */
     public function testExecuteWithTwoParams(): void
     {
@@ -91,7 +91,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Route\Route::execute
+     * @covers \LiteApi\Http\Route::execute
      */
     public function testExecuteWithQuery(): void
     {
@@ -104,7 +104,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Route\Route::execute
+     * @covers \LiteApi\Http\Route::execute
      */
     public function testExecuteWithContainerServices(): void
     {

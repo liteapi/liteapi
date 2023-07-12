@@ -7,7 +7,7 @@ use LiteApi\Command\CommandHandler;
 use LiteApi\Component\Common\ArrayAssertionTrait;
 use LiteApi\Component\Util\PhpArrayExporter;
 use LiteApi\Container\Container;
-use LiteApi\Route\Router;
+use LiteApi\Http\Router;
 
 class Extension
 {

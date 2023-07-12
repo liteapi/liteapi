@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Route;
+namespace LiteApi\Http;
 
 use Exception;
 use LiteApi\Component\Common\BuiltinValue;
@@ -9,10 +9,10 @@ use LiteApi\Container\Container;
 use LiteApi\Container\ContainerNotFoundException;
 use LiteApi\Exception\KernelException;
 use LiteApi\Exception\ProgrammerException;
-use LiteApi\Http\Request;
-use LiteApi\Http\Response;
-use LiteApi\Route\Attribute\HasJsonContent;
-use LiteApi\Route\Attribute\HasQuery;
+use LiteApi\Http\Request\Attribute\HasJsonContent;
+use LiteApi\Http\Request\Attribute\HasQuery;
+use LiteApi\Http\Request\Request;
+use LiteApi\Http\Response\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
@@ -108,7 +108,7 @@ class Route
         if (!empty($hasQueryAttributes)) {
             $queries = [];
             foreach ($hasQueryAttributes as $hasQueryAttribute) {
-                /** @var HasQuery $queryInstance */
+                /** @var \LiteApi\Http\Request\Attribute\HasQuery $queryInstance */
                 $queryInstance = $hasQueryAttribute->newInstance();
                 $queries[$queryInstance->key] = $queryInstance->type;
             }
@@ -117,7 +117,7 @@ class Route
 
         $hasJsonContentAttributes = $reflectionMethod->getAttributes(HasJsonContent::class);
         if (!empty($hasJsonContentAttributes)) {
-            /** @var HasJsonContent $jsonInstance */
+            /** @var \LiteApi\Http\Request\Attribute\HasJsonContent $jsonInstance */
             $jsonInstance = $hasJsonContentAttributes[0]->newInstance();
             $request->parseJsonContent($jsonInstance->requiredParams);
         }
