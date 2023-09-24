@@ -1,6 +1,6 @@
 <?php
 
-namespace LiteApi\Http;
+namespace LiteApi\Component\Util;
 
 class ValuesBag
 {

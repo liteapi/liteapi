@@ -1,12 +1,12 @@
 <?php
 
-namespace LiteApi\Route;
+namespace LiteApi\Http;
 
 use Exception;
 use LiteApi\Http\Exception\HttpException;
-use LiteApi\Http\Request;
-use LiteApi\Http\Response;
-use LiteApi\Http\ResponseStatus;
+use LiteApi\Http\Request\Request;
+use LiteApi\Http\Response\Response;
+use LiteApi\Http\Response\ResponseStatus;
 
 class Router
 {

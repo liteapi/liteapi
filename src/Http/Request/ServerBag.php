@@ -1,6 +1,9 @@
 <?php
 
-namespace LiteApi\Http;
+namespace LiteApi\Http\Request;
+
+use LiteApi\Component\Util\ValuesBag;
+use LiteApi\Http\HeadersBag;
 
 class ServerBag extends ValuesBag
 {

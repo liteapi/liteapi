@@ -1,11 +1,11 @@
 <?php
 
-namespace LiteApi\Test\Http;
+namespace LiteApi\Test\Http\Request;
 
 use LiteApi\Http\Exception\HttpException;
-use LiteApi\Http\Request;
-use LiteApi\Http\ResponseStatus;
-use LiteApi\Route\QueryType;
+use LiteApi\Http\Request\QueryType;
+use LiteApi\Http\Request\Request;
+use LiteApi\Http\Response\ResponseStatus;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
@@ -21,7 +21,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Http\Request::parseQueryByDefinition
+     * @covers \LiteApi\Http\Request\Request::parseQueryByDefinition
      */
     public function testParseQueryByDefinition(): void
     {
@@ -46,7 +46,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @covers \LiteApi\Http\Request::parseJsonContent
+     * @covers \LiteApi\Http\Request\Request::parseJsonContent
      */
     public function testParseJsonContent(): void
     {

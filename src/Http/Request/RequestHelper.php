@@ -1,8 +1,9 @@
 <?php
 
-namespace LiteApi\Http;
+namespace LiteApi\Http\Request;
 
 use LiteApi\Http\Exception\HttpException;
+use LiteApi\Http\Response\ResponseStatus;
 
 class RequestHelper
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace LiteApi\Route\Attribute;
+namespace LiteApi\Http\Request\Attribute;
 
-use LiteApi\Http\ResponseStatus;
+use LiteApi\Http\Response\ResponseStatus;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class OnError

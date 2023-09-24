@@ -1,8 +1,8 @@
 <?php
 
-namespace LiteApi\Http;
+namespace LiteApi\Http\Response;
 
-use function function_exists;
+use LiteApi\Http\HeadersBag;
 
 class Response
 {

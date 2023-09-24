@@ -4,7 +4,7 @@ namespace LiteApi\Http\Exception;
 
 use Exception;
 use LiteApi\Exception\ProgrammerException;
-use LiteApi\Http\ResponseStatus;
+use LiteApi\Http\Response\ResponseStatus;
 use Throwable;
 
 class HttpException extends Exception

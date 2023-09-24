@@ -1,9 +1,9 @@
 <?php
 
-namespace LiteApi\Route\Attribute;
+namespace LiteApi\Http\Request\Attribute;
 
 use Attribute;
-use LiteApi\Route\QueryType;
+use LiteApi\Http\Request\QueryType;
 
 /**
  * Query key that IF EXISTS in request will be parsed as given definition says
@@ -14,7 +14,7 @@ class HasQuery
 
     /**
      * @param string $key
-     * @param string|QueryType $type
+     * @param string|\LiteApi\Http\Request\QueryType $type
      */
     public function __construct(
         public string $key,

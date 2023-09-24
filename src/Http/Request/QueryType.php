@@ -1,11 +1,11 @@
 <?php
 
-namespace LiteApi\Route;
+namespace LiteApi\Http\Request;
 
 use DateTime;
 use DateTimeInterface;
 use LiteApi\Http\Exception\HttpException;
-use LiteApi\Http\ResponseStatus;
+use LiteApi\Http\Response\ResponseStatus;
 
 enum QueryType
 {

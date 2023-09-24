@@ -11,7 +11,7 @@ class DefinitionsTransfer
         public array $services,
         /** @var array<string,string> */
         public array $commands,
-        /** @var \LiteApi\Route\Route[] */
+        /** @var \LiteApi\Http\Route[] */
         public array $routes,
         /** @var array<int,string> */
         public array $onErrors,

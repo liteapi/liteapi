@@ -2,7 +2,7 @@
 
 namespace LiteApi\Component\Runner;
 
-use LiteApi\Http\Request;
+use LiteApi\Http\Request\Request;
 use LiteApi\Kernel;
 
 class HttpRunner implements RunnerInterface

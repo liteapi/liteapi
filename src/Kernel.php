@@ -12,9 +12,9 @@ use LiteApi\Component\Loader\DefinitionsTransfer;
 use LiteApi\Container\Container;
 use LiteApi\Event\Handler;
 use LiteApi\Event\KernelEvent;
-use LiteApi\Http\Request;
-use LiteApi\Http\Response;
-use LiteApi\Route\Router;
+use LiteApi\Http\Request\Request;
+use LiteApi\Http\Response\Response;
+use LiteApi\Http\Router;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
 
