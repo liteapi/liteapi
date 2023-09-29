@@ -40,10 +40,7 @@ class Response
             fastcgi_finish_request();
         } elseif (function_exists('litespeed_finish_request')) {
             litespeed_finish_request();
-        } /*elseif (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true)) {
-            static::closeOutputBuffers(0, true);
-            flush();
-        }*/
+        }
     }
 
     private function sendHeaders(): void

@@ -12,6 +12,7 @@ use LiteApi\Component\Loader\DefinitionsTransfer;
 use LiteApi\Container\Container;
 use LiteApi\Event\Handler;
 use LiteApi\Event\KernelEvent;
+use LiteApi\Http\Middleware\Base\HandlerInterface;
 use LiteApi\Http\Request\Request;
 use LiteApi\Http\Response\Response;
 use LiteApi\Http\Router;
@@ -24,8 +25,8 @@ class Kernel
     public const VERSION = 000600;
     public const VERSION_DOTTED = '0.6.0';
     /* only for stable version
-    public const VERSION_END_OF_LIFE = '09/2023';
-    public const VERSION_END_OF_MAINTENANCE = '09/2023';
+    public const VERSION_END_OF_LIFE = '12/2023';
+    public const VERSION_END_OF_MAINTENANCE = '12/2023';
     */
 
     private const PROPERTIES_TO_CACHE = [
@@ -143,9 +144,16 @@ class Kernel
             $this->router->validateIp($request->ip);
             $this->eventHandler->trigger(KernelEvent::BeforeRequest, $request);
             $route = $this->router->getRoute($request);
+            foreach ($this->config->middleware as $middleware) {
+                /** @var HandlerInterface $middlewareObject */
+                $middlewareObject = new $middleware();
+                $middlewareObject->handle($request, $route);
+            }
+
             $this->container->add(['name' => Request::class, 'args' => [], 'object' => $request]);
             $response = $route->execute($this->container, $request);
         } catch (Exception $e) {
+
             $this->kernelLogger?->error($e->getMessage(), ['exception' => $e]);
             $response = $this->router->getErrorResponse($e);
             $this->eventHandler->trigger(KernelEvent::RequestException, $e, $response);
