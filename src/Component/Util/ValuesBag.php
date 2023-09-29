@@ -24,4 +24,12 @@ class ValuesBag
     {
         return $this->values[$key] ?? $default;
     }
+
+    /**
+     * @return string[]|int[]|null[]
+     */
+    public function all(): array
+    {
+        return $this->values;
+    }
 }
