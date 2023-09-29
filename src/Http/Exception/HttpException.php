@@ -4,6 +4,7 @@ namespace LiteApi\Http\Exception;
 
 use Exception;
 use LiteApi\Exception\ProgrammerException;
+use LiteApi\Http\Response\Response;
 use LiteApi\Http\Response\ResponseStatus;
 use Throwable;
 
@@ -22,6 +23,11 @@ class HttpException extends Exception
             throw new ProgrammerException('HttpException must have status greater or equal to 400');
         }
         parent::__construct($message, $status->value, $previous);
+    }
+
+    public function createResponse(): Response
+    {
+        return new Response($this->getMessage(), $this->status);
     }
 
 }
